@@ -155,7 +155,7 @@ npm run test:formats
 
 第二个命令需要安装 LibreOffice，实际生成 Word、转成 PDF、再转回 Word，检查文字与原文件是否保留。样例输出保存在 `artifacts/`，方便打开检查排版。能力检测失败会报错，不会跳过检查后宣称成功。
 
-`npm run test:formats` 使用自建样例验证 65 条新格式转换方向及中文失败，结果和方向清单保存到 `artifacts/format-expansion/`。`npm run test:formats-ui` 检查六类文件的多个按钮、非默认目标、保存扩展名、取消、失败和结束回待机；也需要同样的 Playwright 设置。
+`npm run test:formats` 使用自建样例完成 65 条真实转换检查（含 EXIF 方向回归）及中文失败检查，结果和方向清单保存到 `artifacts/format-expansion/`。`npm run test:formats-ui` 检查六类文件的多个按钮、非默认目标、保存扩展名、取消、失败和结束回待机；也需要同样的 Playwright 设置。
 
 如果 LibreOffice 安装在非标准位置，可用 `SOFFICE_PATH` 指定完整的 soffice 路径。正常安装到 `/Applications/LibreOffice.app` 时不需要配置。
 

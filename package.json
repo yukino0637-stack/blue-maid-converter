@@ -1,0 +1,29 @@
+{
+  "name": "cat-file-converter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "本地文档、图片、音视频与表格转换桌宠",
+  "main": "src/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.cjs",
+    "test:integration": "node test/integration.cjs",
+    "test:formats": "node test/formats-integration.cjs",
+    "test:formats-ui": "node test/formats-ui.cjs",
+    "test:ui": "node test/ui-smoke.cjs",
+    "test:menu": "node test/menu-ui.cjs"
+  },
+  "overrides": {
+    "exceljs": { "uuid": "11.1.1" }
+  },
+  "devDependencies": {
+    "electron": "44.5.1"
+  },
+  "dependencies": {
+    "csv-parse": "7.0.3",
+    "csv-stringify": "6.9.0",
+    "exceljs": "4.4.0",
+    "marked": "18.0.14",
+    "sharp": "0.35.5"
+  }
+}

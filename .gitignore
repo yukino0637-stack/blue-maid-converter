@@ -1,0 +1,23 @@
+node_modules/
+.DS_Store
+artifacts/
+*.log
+native-launcher/build/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.codex/
+.agents/
+click-sound.json
+# 本机验证记录与历史方案；公开说明放在 docs/。
+/VALIDATION.md
+/FORMAT-EXPANSION-PLAN.md
+# 未使用的用户提供素材，不随公开仓库分发。
+/assets/cat-*-transparent.webm
+# 上游未授予音效再许可；保留本机文件，但不提交。
+/assets/duck-sound/*.mp3
+/assets/duck-sound/*.wav

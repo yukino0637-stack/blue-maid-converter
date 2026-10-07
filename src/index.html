@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>小猫文件转换器</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="scene" aria-label="小猫文件转换器">
+    <section id="bubble" class="bubble" aria-labelledby="bubble-title" hidden>
+      <div class="bubble-content">
+        <div class="bubble-heading">
+          <h1 id="bubble-title">要转换为什么格式鲸</h1>
+          <button id="dismiss" class="icon-button" title="关闭气泡" aria-label="关闭气泡">×</button>
+        </div>
+        <p id="file-name" class="file-name" hidden></p>
+        <p id="message" class="message" role="status" aria-live="polite"></p>
+        <div id="formats" class="formats" hidden>
+        <button id="format" class="format-button" hidden>
+          <span id="format-symbol" class="format-symbol">PDF</span>
+          <span><strong id="format-label">PDF 文档</strong><small id="format-note">.pdf · 点击转换</small></span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </button>
+        </div>
+        <p id="pdf-warning" class="warning" hidden>实验功能：排版可能变化；扫描件不会识别为可编辑文字。</p>
+        <code id="install" class="install" hidden>brew install --cask libreoffice</code>
+        <div class="bubble-actions">
+          <button id="recheck" class="text-button" hidden>已安装，重新检查</button>
+          <button id="reveal" class="text-button" hidden>在 Finder 中查看 ↗</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="pet-menu" class="pet-menu glass" aria-label="小女仆菜单" hidden>
+      <div class="menu-heading"><strong>小女仆菜单</strong><button id="menu-close" class="icon-button" aria-label="关闭菜单">×</button></div>
+      <div id="menu-home">
+        <button id="activity-toggle" class="menu-wide activity-toggle" aria-controls="activity-card" aria-expanded="false">活动 <span aria-hidden="true">›</span></button>
+        <h2>声音</h2>
+        <div class="sound-options" role="group" aria-label="点击音效">
+          <button id="sound-duck" aria-pressed="true">小黄鸭 <span>默认</span></button>
+          <button id="sound-custom" aria-pressed="false" hidden></button>
+        </div>
+        <button id="sound-import" class="menu-wide">＋ 导入音效</button>
+        <p class="sound-hint">MP3 / WAV · 最大 10 MB</p>
+        <button id="menu-quit" class="menu-wide menu-quit">退出小女仆</button>
+        <p id="menu-status" class="menu-status" role="status" aria-live="polite"></p>
+      </div>
+      <div id="activity-card" hidden>
+        <div class="activity-heading"><button id="activity-back" aria-label="返回主菜单">‹ 返回</button><h2>活动</h2></div>
+        <div id="activity-list" class="activity-options" role="group" aria-label="活动列表"></div>
+      </div>
+    </section>
+
+    <div id="pet-area" class="pet-area">
+      <button id="menu-toggle" class="menu-toggle glass" aria-label="打开小女仆菜单" aria-controls="pet-menu" aria-expanded="false" hidden><span aria-hidden="true">⋯</span></button>
+      <div id="file-token" class="file-token" aria-hidden="true" hidden><span class="paper-fold"></span><b>DOC</b></div>
+      <div id="particles" class="particles" aria-hidden="true"></div>
+      <div id="pet" class="pet" role="button" tabindex="0" aria-haspopup="menu" aria-label="等待文件的蓝毛小女仆">
+        <video id="cat-idle" src="../assets/dsh-pet/待机呼吸休闲.webm" autoplay muted playsinline loop preload="auto" aria-hidden="true"></video>
+        <video id="cat-working" src="../assets/dsh-pet/工作状态-忙碌点按.webm" autoplay muted playsinline loop preload="auto" aria-hidden="true" hidden></video>
+        <video id="cat-finish" src="../assets/dsh-pet/工作状态-雀跃庆祝.webm" autoplay muted playsinline preload="auto" aria-hidden="true" hidden></video>
+        <video id="cat-interaction" src="../assets/dsh-pet/点击回应-元气挥手.webm" autoplay muted playsinline preload="auto" aria-hidden="true" hidden></video>
+        <video id="cat-drag" src="../assets/dsh-pet/被鼠标拖拽悬空反馈.webm" autoplay muted playsinline loop preload="auto" aria-hidden="true" hidden></video>
+      </div>
+    </div>
+  </main>
+  <script src="actions.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

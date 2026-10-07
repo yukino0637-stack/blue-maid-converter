@@ -1,0 +1,4 @@
+#!/bin/sh
+# 启动现有 MVP；项目目录从本启动器的位置取得。
+project_dir="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)" || exit 1
+exec "$project_dir/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron" "$project_dir"
