@@ -135,7 +135,7 @@ const hash = async file => createHash('sha256').update(await fs.readFile(file)).
       await check('slides.' + source, target, async output => {
         if (target === 'pdf') {
           const { stdout } = await run(path.join(path.dirname(tools.pdftoppmPath), process.platform === 'win32' ? 'pdfinfo.exe' : 'pdfinfo'), [output]); assert.match(stdout, /Pages:\s*2/);
-          const text = await run('/opt/homebrew/bin/pdftotext', [output, '-']); assert.match(text.stdout, /DESKTOP PET SLIDE 1/); assert.match(text.stdout, /中文幻灯片/);
+          const text = await run(path.join(path.dirname(tools.pdftoppmPath), process.platform === 'win32' ? 'pdftotext.exe' : 'pdftotext'), [output, '-']); assert.match(text.stdout, /DESKTOP PET SLIDE 1/); assert.match(text.stdout, /中文幻灯片/);
         } else {
           const stdout = [...(await require('../src/conversion-utils.cjs').zipEntries(output)).keys()].join('\n');
           assert.equal(stdout.split('\n').filter(name => name.endsWith('.' + target)).length, 2);
