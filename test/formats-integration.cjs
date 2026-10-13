@@ -17,7 +17,8 @@ const hash = async file => createHash('sha256').update(await fs.readFile(file)).
   await fs.mkdir(root, { recursive: true });
   const [office, media] = await Promise.all([detectLibreOffice(), detectExtraTools()]);
   const tools = { ...office, ...media };
-  assert.ok(tools.available && tools.pdfSupported && tools.ffmpeg && tools.poppler, '实际工具必须可用，不能跳过转换');
+  assert.ok(tools.available && tools.pdfSupported && tools.ffmpeg && tools.poppler,
+    '实际工具必须可用，不能跳过转换: ' + JSON.stringify({ libreoffice: tools.available, pdfImport: tools.pdfSupported, ffmpeg: tools.ffmpeg, poppler: tools.poppler }));
   const inputs = path.join(root, 'inputs');
   const outputs = path.join(root, 'outputs');
   // 只清理这项测试自己的旧结果，保证不碰用户文件。

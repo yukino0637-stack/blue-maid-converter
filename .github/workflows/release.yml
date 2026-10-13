@@ -31,7 +31,14 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          choco install libreoffice-fresh ffmpeg poppler pandoc qpdf imagemagick -y --no-progress
+          foreach ($package in @('libreoffice-fresh', 'ffmpeg', 'poppler', 'pandoc', 'qpdf', 'imagemagick')) {
+            for ($attempt = 1; $attempt -le 3; $attempt++) {
+              choco install $package -y --no-progress
+              if ($LASTEXITCODE -eq 0) { break }
+              if ($attempt -eq 3) { throw "Cannot install $package" }
+              Start-Sleep -Seconds 10
+            }
+          }
           $env:PATH = [Environment]::GetEnvironmentVariable('PATH','Machine') + ';' + [Environment]::GetEnvironmentVariable('PATH','User') + ';C:\ProgramData\chocolatey\bin'
           "PATH=$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           Copy-Item assets/conversion-fonts/NotoSansCJKsc-Regular.otf C:\Windows\Fonts\NotoSansCJKsc-Regular.otf
