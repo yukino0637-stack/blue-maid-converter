@@ -82,8 +82,16 @@ async function validateExtraInput(input, source) {
   if (source.category === 'image') {
     try {
       if (['heic', 'heif'].includes(source.ext) && process.platform !== 'darwin') {
-        const bytes = await fs.readFile(input);
-        if (bytes.toString('ascii', 4, 8) !== 'ftyp' || !/heic|heix|hevc|hevx|mif1/.test(bytes.toString('ascii', 8, 40))) throw new Error();
+        const tools = await detectExtraTools();
+        if (tools.heif && tools.magickPath) {
+          const { stdout } = await run(tools.magickPath, ['identify', '-limit', 'memory', '256MiB', '-limit', 'map', '256MiB', '-format', '%m %w %h', input + '[0]'], { timeout: 30_000 });
+          const info = stdout.trim().match(/^(HEIC|HEIF|AVIF)\s+(\d+)\s+(\d+)$/);
+          if (!info || !(Number(info[2]) > 0 && Number(info[3]) > 0 && Number(info[2]) * Number(info[3]) <= MAX_PIXELS)) throw new Error();
+        } else {
+          // Missing decoder: inspect the container so the UI can show installation instructions.
+          const bytes = await fs.readFile(input);
+          if (bytes.toString('ascii', 4, 8) !== 'ftyp' || !/heic|heix|hevc|hevx|mif1|msf1/.test(bytes.toString('ascii', 8, 64))) throw new Error();
+        }
       } else if (['heic', 'heif'].includes(source.ext)) {
         const { stdout } = await run('/usr/bin/sips', ['-g', 'pixelWidth', '-g', 'pixelHeight', input], { timeout: 30_000 });
         const w = Number(stdout.match(/pixelWidth:\s*(\d+)/)?.[1]);
