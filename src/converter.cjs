@@ -181,7 +181,7 @@ async function detectLibreOffice() {
       // DOCX 可同时保存形状和备用文本，因此同一文字可能出现两次。
       pdfSupported = /^(?:CAT_PDF_IMPORT_CHECK)+$/.test(documentText(xml).replace(/\s/g, ''));
     } catch { /* 正向转换仍可用，界面明确提示反向能力检测未通过。 */ }
-    finally { await fs.rm(workspace.dir, { recursive: true, force: true }); }
+    finally { await fs.rm(workspace.dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }); }
     return { available: true, executable, version, pdfSupported, installCommand: INSTALL_COMMAND };
   }
   return { available: false, pdfSupported: false, installCommand: INSTALL_COMMAND };
@@ -244,7 +244,7 @@ async function convertFile(input, destination, soffice, options = {}) {
     if (/[\u4e00-\u9fff]/.test(error.message)) throw error;
     throw new Error('文件转换失败鲸。文件可能损坏、加密或使用了不支持的编码，请核对文件和所需工具。');
   } finally {
-    await fs.rm(workspace.dir, { recursive: true, force: true });
+    await fs.rm(workspace.dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
   }
 }
 
@@ -290,7 +290,7 @@ async function convertFiles(inputs, destination, soffice, options = {}) {
   } catch (error) {
     if (/[\u4e00-\u9fff]/.test(error.message)) throw error;
     throw new Error('多文件转换失败鲸。文件可能损坏、加密或使用了不支持的格式。');
-  } finally { await fs.rm(workspace.dir, { recursive: true, force: true }); }
+  } finally { await fs.rm(workspace.dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }); }
 }
 
 module.exports = { detectLibreOffice, inspectInput, convertFile, convertFiles, probePdf, wordXml, convertInWorkspace };

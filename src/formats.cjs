@@ -5,6 +5,8 @@ const { execFile } = require('node:child_process');
 const { promisify } = require('node:util');
 const { pathToFileURL } = require('node:url');
 const sharp = require('sharp');
+// libvips operation caching can retain input/output handles and block Windows temp cleanup.
+if (process.platform === 'win32') sharp.cache(false);
 const ExcelJS = require('exceljs');
 const { parse } = require('csv-parse/sync');
 const { stringify } = require('csv-stringify/sync');
