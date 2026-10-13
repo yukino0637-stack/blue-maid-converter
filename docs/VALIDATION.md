@@ -2,6 +2,8 @@
 
 以下记录区分发布前实际复测和之前的本机验证。命令应在仓库根目录执行；测试数据与日志在 Git 忽略的 `artifacts/` 或系统临时目录中，不随仓库分发。
 
+2026-10-13 的 macOS / Windows 独立安装包验收见 [v0.2.0 双平台发布验收](RELEASE-VALIDATION-v0.2.0.md)。下方 2026-10-07 的未验证项是当时的历史边界。
+
 ## 2026-10-07 发布前复测
 
 验证对象是从公开文件清单建立的独立副本，**不含 `assets/duck-sound/Ya1.mp3`**、个人设置、后台日志或构建缓存。该副本执行 `npm ci`，没有复用原项目的 node_modules 链接。环境为 macOS Apple Silicon、Node.js 26.10.0、Electron 44.5.1；办公及媒体工具版本见 THIRD_PARTY_NOTICES.md。

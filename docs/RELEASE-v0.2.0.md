@@ -15,3 +15,5 @@
 人物动画来自 [PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet)，保留非商用与署名要求。格式规则参考 [FlyingMouse Format](https://github.com/LaoFeng-mouse/flyingmouse-format)，转换接入、保护机制与桌宠交互由本项目通过 vibe coding 独立编写和整合；底层转换能力由各第三方工具提供。完整来源见 ATTRIBUTION.md 和 THIRD_PARTY_NOTICES.md。
 
 公开版不分发缺少授权的小黄鸭音频，请通过菜单导入自有或有适用授权的 MP3/WAV。
+
+本版 Mac / Windows 的真实转换、安装后界面检查及下载校验详见 [双平台验收记录](https://github.com/yukino0637-stack/blue-maid-converter/blob/main/docs/RELEASE-VALIDATION-v0.2.0.md)；[构建与测试日志](https://github.com/yukino0637-stack/blue-maid-converter/actions/runs/38396608873)全部通过。
