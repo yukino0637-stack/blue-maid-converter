@@ -1,0 +1,48 @@
+appId: com.yukino0637.bluemaidconverter
+productName: 蓝毛小女仆
+asar: true
+directories:
+  output: dist
+files:
+  - package.json
+  - src/**/*
+  - assets/dsh-pet/**/*
+  - assets/conversion-fonts/**/*
+  - assets/duck-sound/SOURCES.md
+  - assets/duck-sound/LICENSE
+  - LICENSE
+  - LICENSE-SCOPE.md
+  - ATTRIBUTION.md
+  - THIRD_PARTY_NOTICES.md
+  - README.md
+  - docs/INSTALL.md
+  - docs/CONVERSION-FORMATS.md
+  - docs/CONVERSION-VALIDATION.md
+  - licenses/**/*
+extraResources:
+  - from: src/pdf-structure.py
+    to: converter-tools/pdf-structure.py
+mac:
+  category: public.app-category.utilities
+  identity: '-'
+  hardenedRuntime: false
+  target:
+    - target: dmg
+      arch: arm64
+    - target: zip
+      arch: arm64
+  artifactName: BlueMaid-${version}-macOS-${arch}.${ext}
+win:
+  signAndEditExecutable: false
+  target:
+    - target: nsis
+      arch: x64
+  artifactName: BlueMaid-${version}-Windows-${arch}-Setup.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: 蓝毛小女仆
+publish: null

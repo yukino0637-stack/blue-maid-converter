@@ -21,3 +21,9 @@ click-sound.json
 # 上游未授予音效再许可；保留本机文件，但不提交。
 /assets/duck-sound/*.mp3
 /assets/duck-sound/*.wav
+
+# 本机可选扫描表格环境与模型，不随仓库分发。
+/.local-tools/
+
+# 独立应用安装包与打包缓存。
+/dist/

@@ -25,7 +25,7 @@
 
 参考的具体部分包括：输入类别与多个输出目标的组织；按底层工具是否安装启用目标；Sharp 图片转换及透明图转 JPG 白底提示；FFmpeg 音视频处理；LibreOffice 办公文件转换；ExcelJS 与 CSV 解析器配合；PPT 经 PDF 逐页导出图片并打包 ZIP；转换前说明公式、样式等信息损失。
 
-本项目没有复制或重新打包该仓库的源码、界面、品牌素材、CLI 或 HTTP 服务，也没有将它作为运行依赖。具体转换代码在 `src/converter.cjs` 和 `src/formats.cjs` 中独立实现，Mac HEIC 采用系统 `sips`，Markdown→TXT 采用 Marked 解析。底层工具与库是第三方能力，不宣称为自己编写的转换引擎。
+本项目没有复制或重新打包该仓库的源码、界面、品牌素材、CLI 或 HTTP 服务，也没有将它作为运行依赖。具体转换代码在 `src/converter.cjs`、`src/formats.cjs` 和 `src/conversion-*.cjs` 中独立实现，Mac HEIC 采用系统 `sips`，Markdown→TXT 采用 Marked 解析。底层工具与库是第三方能力，不宣称为自己编写的转换引擎。
 
 ## 我通过 vibe coding 增加的功能
 
@@ -51,3 +51,9 @@ Electron 提供桌面窗口、IPC 和系统对话框；Node.js 提供文件和�
 ## 许可边界
 
 本项目独立代码采用 MIT，但人物动画遵循 dsh-pet 的非商用与署名要求，音效缺少再分发授权而被排除。完整边界见 [LICENSE-SCOPE.md](LICENSE-SCOPE.md)。请在介绍或分发含人物素材的版本时保留原作者地址：https://github.com/PC2005-cloud/dsh-pet 。
+
+## 2026-10-10 转换扩展
+
+沿用同一固定 FlyingMouse Format 提交，额外参考其全量格式映射、OCR、PDF 合并/拆分/加解密、电子书/字幕、编码与附件保存的处理方式。转换规则作为功能事实独立整理，实际处理器调用 Pandoc、Mammoth、PDF.js、PDF-lib、Tesseract、qpdf、LibRaw，以及可选的本机 PaddleOCR 表格管线等工具，来源与许可见第三方说明。没有引入上游源码、专用 Windows 引擎、服务或品牌界面。
+
+本项目通过 vibe coding 编写的部分是 Mac 路线接入、局部转换参数、批量共同目标、结果和附件保护、中文失败提示及测试。复杂扫描表格使用文字坐标推测，尚不等同上游专用结构引擎；不会把生成 Excel 文件当作结构完全恢复的证据。

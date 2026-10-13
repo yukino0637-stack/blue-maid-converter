@@ -1,0 +1,1770 @@
+{
+  "referenceCommit": "a7b9b15d32db80cecedae00e89289088656fb1ae",
+  "routes": [
+    {
+      "ext": "jpg",
+      "category": "image",
+      "targets": [
+        "png",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "jpeg",
+      "category": "image",
+      "targets": [
+        "png",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "jfif",
+      "category": "image",
+      "targets": [
+        "png",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "jpe",
+      "category": "image",
+      "targets": [
+        "png",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "png",
+      "category": "image",
+      "targets": [
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "webp",
+      "category": "image",
+      "targets": [
+        "jpg",
+        "png",
+        "gif",
+        "avif",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "gif",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "avif",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "avif",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "tif",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "tiff",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "bmp",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "heic",
+      "category": "image",
+      "targets": [
+        "jpg",
+        "png",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "heif",
+      "category": "image",
+      "targets": [
+        "jpg",
+        "png",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "ico",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "tga",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "svg",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "jp2",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "j2k",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "jxl",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "qoi",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "ppm",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "ai",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "psd",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "cr2",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "cr3",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "crw",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "nef",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "arw",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "dng",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "raf",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "rw2",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "orf",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "pef",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "srw",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "3fr",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "erf",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "fff",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "iiq",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "kdc",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "mef",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "mrw",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "x3f",
+      "category": "image",
+      "targets": [
+        "png",
+        "jpg",
+        "webp",
+        "gif",
+        "avif",
+        "tiff",
+        "ico",
+        "bmp",
+        "tga",
+        "jp2",
+        "jxl",
+        "qoi",
+        "ppm",
+        "pdf",
+        "mp4",
+        "webm",
+        "txt",
+        "docx",
+        "md"
+      ]
+    },
+    {
+      "ext": "pdf",
+      "category": "pdf",
+      "targets": [
+        "docx",
+        "xlsx",
+        "txt",
+        "html",
+        "md",
+        "png",
+        "jpg",
+        "webp",
+        "pdf"
+      ]
+    },
+    {
+      "ext": "srt",
+      "category": "subtitle",
+      "targets": [
+        "vtt",
+        "ass",
+        "ssa",
+        "txt"
+      ]
+    },
+    {
+      "ext": "vtt",
+      "category": "subtitle",
+      "targets": [
+        "srt",
+        "ass",
+        "ssa",
+        "txt"
+      ]
+    },
+    {
+      "ext": "ass",
+      "category": "subtitle",
+      "targets": [
+        "srt",
+        "vtt",
+        "ssa",
+        "txt"
+      ]
+    },
+    {
+      "ext": "ssa",
+      "category": "subtitle",
+      "targets": [
+        "srt",
+        "vtt",
+        "ass",
+        "txt"
+      ]
+    },
+    {
+      "ext": "doc",
+      "category": "document",
+      "targets": [
+        "pdf",
+        "docx",
+        "odt",
+        "rtf",
+        "txt",
+        "html",
+        "md"
+      ]
+    },
+    {
+      "ext": "docx",
+      "category": "document",
+      "targets": [
+        "pdf",
+        "odt",
+        "rtf",
+        "txt",
+        "html",
+        "md"
+      ]
+    },
+    {
+      "ext": "odt",
+      "category": "document",
+      "targets": [
+        "pdf",
+        "docx",
+        "rtf",
+        "txt",
+        "html",
+        "md"
+      ]
+    },
+    {
+      "ext": "rtf",
+      "category": "document",
+      "targets": [
+        "pdf",
+        "docx",
+        "odt",
+        "txt",
+        "html",
+        "md"
+      ]
+    },
+    {
+      "ext": "wps",
+      "category": "document",
+      "targets": [
+        "pdf",
+        "docx",
+        "odt",
+        "rtf",
+        "txt",
+        "html",
+        "md"
+      ]
+    },
+    {
+      "ext": "wpt",
+      "category": "document",
+      "targets": [
+        "pdf",
+        "docx",
+        "odt",
+        "rtf",
+        "txt",
+        "html",
+        "md"
+      ]
+    },
+    {
+      "ext": "wpd",
+      "category": "document",
+      "targets": [
+        "pdf",
+        "docx",
+        "odt",
+        "rtf",
+        "txt",
+        "html",
+        "md"
+      ]
+    },
+    {
+      "ext": "ofd",
+      "category": "document",
+      "targets": [
+        "pdf"
+      ]
+    },
+    {
+      "ext": "xls",
+      "category": "spreadsheet",
+      "targets": [
+        "xlsx",
+        "csv",
+        "tsv",
+        "pdf",
+        "ods",
+        "html"
+      ]
+    },
+    {
+      "ext": "xlsx",
+      "category": "spreadsheet",
+      "targets": [
+        "csv",
+        "tsv",
+        "pdf",
+        "xls",
+        "ods",
+        "html"
+      ]
+    },
+    {
+      "ext": "xlsm",
+      "category": "spreadsheet",
+      "targets": [
+        "pdf",
+        "xlsx",
+        "xls",
+        "ods",
+        "csv",
+        "html"
+      ]
+    },
+    {
+      "ext": "ods",
+      "category": "spreadsheet",
+      "targets": [
+        "pdf",
+        "xlsx",
+        "xls",
+        "csv",
+        "html"
+      ]
+    },
+    {
+      "ext": "csv",
+      "category": "spreadsheet",
+      "targets": [
+        "xlsx",
+        "tsv",
+        "pdf",
+        "html",
+        "txt",
+        "md",
+        "json",
+        "epub"
+      ]
+    },
+    {
+      "ext": "tsv",
+      "category": "spreadsheet",
+      "targets": [
+        "xlsx",
+        "csv",
+        "pdf",
+        "html",
+        "txt",
+        "md",
+        "json",
+        "epub"
+      ]
+    },
+    {
+      "ext": "et",
+      "category": "spreadsheet",
+      "targets": [
+        "pdf",
+        "xlsx",
+        "xls",
+        "ods",
+        "csv",
+        "html"
+      ]
+    },
+    {
+      "ext": "ett",
+      "category": "spreadsheet",
+      "targets": [
+        "pdf",
+        "xlsx",
+        "xls",
+        "ods",
+        "csv",
+        "html"
+      ]
+    },
+    {
+      "ext": "ppt",
+      "category": "presentation",
+      "targets": [
+        "pdf",
+        "jpg",
+        "png",
+        "pptx",
+        "odp",
+        "html"
+      ]
+    },
+    {
+      "ext": "pptx",
+      "category": "presentation",
+      "targets": [
+        "pdf",
+        "jpg",
+        "png",
+        "odp",
+        "html"
+      ]
+    },
+    {
+      "ext": "odp",
+      "category": "presentation",
+      "targets": [
+        "pdf",
+        "pptx",
+        "html",
+        "png",
+        "jpg"
+      ]
+    },
+    {
+      "ext": "dps",
+      "category": "presentation",
+      "targets": [
+        "pdf",
+        "pptx",
+        "odp",
+        "html",
+        "png",
+        "jpg"
+      ]
+    },
+    {
+      "ext": "dpt",
+      "category": "presentation",
+      "targets": [
+        "pdf",
+        "pptx",
+        "odp",
+        "html",
+        "png",
+        "jpg"
+      ]
+    },
+    {
+      "ext": "txt",
+      "category": "text",
+      "targets": [
+        "md",
+        "html",
+        "json",
+        "csv",
+        "epub",
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "ext": "md",
+      "category": "text",
+      "targets": [
+        "txt",
+        "html",
+        "json",
+        "csv",
+        "epub",
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "ext": "markdown",
+      "category": "text",
+      "targets": [
+        "txt",
+        "html",
+        "json",
+        "csv",
+        "epub",
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "ext": "html",
+      "category": "text",
+      "targets": [
+        "txt",
+        "md",
+        "json",
+        "csv",
+        "epub",
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "ext": "htm",
+      "category": "text",
+      "targets": [
+        "txt",
+        "md",
+        "json",
+        "csv",
+        "epub",
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "ext": "json",
+      "category": "text",
+      "targets": [
+        "txt",
+        "md",
+        "html",
+        "csv",
+        "epub",
+        "pdf"
+      ]
+    },
+    {
+      "ext": "log",
+      "category": "text",
+      "targets": [
+        "txt",
+        "md",
+        "html",
+        "json",
+        "csv",
+        "epub",
+        "pdf"
+      ]
+    },
+    {
+      "ext": "xml",
+      "category": "text",
+      "targets": [
+        "txt",
+        "md",
+        "html",
+        "json",
+        "csv",
+        "epub",
+        "pdf"
+      ]
+    },
+    {
+      "ext": "yaml",
+      "category": "text",
+      "targets": [
+        "txt",
+        "md",
+        "html",
+        "json",
+        "csv",
+        "epub",
+        "pdf"
+      ]
+    },
+    {
+      "ext": "yml",
+      "category": "text",
+      "targets": [
+        "txt",
+        "md",
+        "html",
+        "json",
+        "csv",
+        "epub",
+        "pdf"
+      ]
+    },
+    {
+      "ext": "epub",
+      "category": "text",
+      "targets": [
+        "txt",
+        "md",
+        "html",
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "ext": "mobi",
+      "category": "text",
+      "targets": [
+        "txt",
+        "md",
+        "epub"
+      ]
+    },
+    {
+      "ext": "mp3",
+      "category": "audio",
+      "targets": [
+        "wav",
+        "flac",
+        "aac",
+        "m4a",
+        "ogg",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "wav",
+      "category": "audio",
+      "targets": [
+        "mp3",
+        "flac",
+        "aac",
+        "m4a",
+        "ogg",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "flac",
+      "category": "audio",
+      "targets": [
+        "mp3",
+        "wav",
+        "aac",
+        "m4a",
+        "ogg",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "m4a",
+      "category": "audio",
+      "targets": [
+        "mp3",
+        "wav",
+        "flac",
+        "aac",
+        "ogg",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "aac",
+      "category": "audio",
+      "targets": [
+        "mp3",
+        "wav",
+        "flac",
+        "m4a",
+        "ogg",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "ogg",
+      "category": "audio",
+      "targets": [
+        "mp3",
+        "wav",
+        "flac",
+        "m4a",
+        "aac",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "opus",
+      "category": "audio",
+      "targets": [
+        "mp3",
+        "wav",
+        "flac",
+        "m4a",
+        "ogg",
+        "aac",
+        "wma"
+      ]
+    },
+    {
+      "ext": "wma",
+      "category": "audio",
+      "targets": [
+        "mp3",
+        "wav",
+        "flac",
+        "m4a",
+        "ogg",
+        "aac",
+        "opus"
+      ]
+    },
+    {
+      "ext": "mp4",
+      "category": "video",
+      "targets": [
+        "mp3",
+        "wav",
+        "gif",
+        "webm",
+        "mkv",
+        "mov",
+        "flac",
+        "m4a",
+        "ogg",
+        "aac",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "mov",
+      "category": "video",
+      "targets": [
+        "mp4",
+        "mp3",
+        "wav",
+        "gif",
+        "webm",
+        "mkv",
+        "flac",
+        "m4a",
+        "ogg",
+        "aac",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "mkv",
+      "category": "video",
+      "targets": [
+        "mp4",
+        "mp3",
+        "wav",
+        "gif",
+        "webm",
+        "mov",
+        "flac",
+        "m4a",
+        "ogg",
+        "aac",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "webm",
+      "category": "video",
+      "targets": [
+        "mp4",
+        "mp3",
+        "wav",
+        "gif",
+        "mkv",
+        "mov",
+        "flac",
+        "m4a",
+        "ogg",
+        "aac",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "avi",
+      "category": "video",
+      "targets": [
+        "mp4",
+        "webm",
+        "mkv",
+        "mov",
+        "gif",
+        "mp3",
+        "wav",
+        "flac",
+        "m4a",
+        "ogg",
+        "aac",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "m4v",
+      "category": "video",
+      "targets": [
+        "mp4",
+        "webm",
+        "mkv",
+        "mov",
+        "gif",
+        "mp3",
+        "wav",
+        "flac",
+        "m4a",
+        "ogg",
+        "aac",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "m4s",
+      "category": "video",
+      "targets": [
+        "mp4",
+        "webm",
+        "mkv",
+        "mov",
+        "gif",
+        "mp3",
+        "wav",
+        "flac",
+        "m4a",
+        "ogg",
+        "aac",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "wmv",
+      "category": "video",
+      "targets": [
+        "mp4",
+        "webm",
+        "mkv",
+        "mov",
+        "gif",
+        "mp3",
+        "wav",
+        "flac",
+        "m4a",
+        "ogg",
+        "aac",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "flv",
+      "category": "video",
+      "targets": [
+        "mp4",
+        "webm",
+        "mkv",
+        "mov",
+        "gif",
+        "mp3",
+        "wav",
+        "flac",
+        "m4a",
+        "ogg",
+        "aac",
+        "opus",
+        "wma"
+      ]
+    },
+    {
+      "ext": "zip",
+      "category": "zip",
+      "targets": [
+        "pdf"
+      ]
+    }
+  ]
+}

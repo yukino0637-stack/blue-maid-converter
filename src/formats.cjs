@@ -18,66 +18,37 @@ const labels = { pdf: 'PDF 文档', docx: 'Word 文档', jpg: 'JPG 图片', png:
   mp3: 'MP3 音频', wav: 'WAV 音频', flac: 'FLAC 音频', aac: 'AAC 音频', m4a: 'M4A 音频',
   mp4: 'MP4 视频', gif: 'GIF 动图', xlsx: 'Excel 表格', csv: 'CSV 表格', tsv: 'TSV 表格', txt: '纯文本', md: 'Markdown 文本' };
 
-function describeFormat(ext) {
-  ext = ext.toLowerCase().replace(/^\./, '');
-  let category, targets;
-  if (['doc', 'docx'].includes(ext)) { category = 'document'; targets = ['pdf']; }
-  else if (ext === 'pdf') { category = 'pdf'; targets = ['docx']; }
-  else if (['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif'].includes(ext)) { category = 'image'; targets = ['jpg', 'png', 'webp']; }
-  else if (audioFormats.includes(ext)) { category = 'audio'; targets = audioFormats; }
-  else if (['mp4', 'mov', 'mkv', 'webm'].includes(ext)) { category = 'video'; targets = ['mp4', 'mp3', 'wav', 'gif']; }
-  else if (['xls', 'xlsx', 'csv', 'tsv'].includes(ext)) { category = 'spreadsheet'; targets = ['xlsx', 'csv', 'tsv']; }
-  else if (['ppt', 'pptx'].includes(ext)) { category = 'presentation'; targets = ['pdf', 'jpg', 'png']; }
-  else if (['txt', 'md', 'markdown'].includes(ext)) { category = 'text'; targets = ['txt', 'md']; }
-  else return null;
-  targets = targets.filter(target => target !== (ext === 'jpeg' ? 'jpg' : ext === 'markdown' ? 'md' : ext));
-  return { ext, category, targets, target: targets[0] };
-}
-
-function formatOptions(source, tools) {
-  return source.targets.map(target => {
-    const archive = source.category === 'presentation' && target !== 'pdf';
-    let enabled = true, reason = '', installCommand = '', note = '';
-    const needsOffice = ['document', 'pdf', 'presentation'].includes(source.category) || source.ext === 'xls';
-    if (needsOffice && !tools.available) {
-      enabled = false; reason = '未找到 LibreOffice'; installCommand = 'brew install --cask libreoffice';
-    } else if (source.category === 'pdf' && !tools.pdfSupported) {
-      enabled = false; reason = 'LibreOffice 未通过 PDF 导入检测'; installCommand = 'brew install --cask libreoffice';
-    } else if (['audio', 'video'].includes(source.category) && !tools.ffmpeg) {
-      enabled = false; reason = '未找到 FFmpeg / ffprobe'; installCommand = 'brew install ffmpeg';
-    } else if (archive && !tools.poppler) {
-      enabled = false; reason = '未找到 Poppler'; installCommand = 'brew install poppler';
-    }
-    if (source.category === 'pdf') note = '实验功能：排版可能变化；扫描件不会识别为可编辑文字。';
-    if (source.category === 'spreadsheet' && ['csv', 'tsv'].includes(target)) note = '仅导出第一张工作表的值，不保留公式和样式。';
-    if (archive) note = '每页一张图片，按顺序保存为 ZIP。';
-    if (target === 'gif') note = '宽度不超过 720 像素，12 帧/秒，无声音。';
-    if (source.category === 'text') note = target === 'txt' ? '去除 Markdown 排版标记，保留可读文字。' : '保留文字，不自动生成标题或排版。';
-    return { target, label: labels[target], extension: archive ? 'zip' : target, enabled, reason, installCommand, note };
-  });
-}
+function describeFormat(ext) { return require('./conversion-full.cjs').describe(ext); }
+function formatOptions(source, tools) { return require('./conversion-full.cjs').options(source, tools); }
 
 async function findExecutable(name, envName, versionArgs) {
-  // Finder 启动时 PATH 可能没有 Homebrew；不依赖 Codex 的临时工具路径。
-  const candidates = [process.env[envName], path.join('/opt/homebrew/bin', name), path.join('/usr/local/bin', name),
-    ...(process.env.PATH || '').split(path.delimiter).filter(dir => dir && !dir.includes('codex-runtimes'))
-      .map(dir => path.join(dir, name))].filter(candidate => candidate && path.isAbsolute(candidate));
+  const candidates = require('./platform-tools.cjs').candidates(name, envName);
   for (const candidate of new Set(candidates)) {
     try {
       await fs.access(candidate, constants.X_OK);
-      await run(candidate, versionArgs, { timeout: 10_000, maxBuffer: 1024 * 1024 });
+      if (versionArgs) await run(candidate, versionArgs, { timeout: 10_000, maxBuffer: 1024 * 1024 });
       return candidate;
     } catch { /* 尝试下一个正式安装路径。 */ }
   }
 }
 
 async function detectExtraTools() {
-  const [ffmpegPath, ffprobePath, pdftoppmPath] = await Promise.all([
-    findExecutable('ffmpeg', 'FFMPEG_PATH', ['-version']),
-    findExecutable('ffprobe', 'FFPROBE_PATH', ['-version']),
-    findExecutable('pdftoppm', 'PDFTOPPM_PATH', ['-v']),
-  ]);
-  return { ffmpegPath, ffprobePath, pdftoppmPath, ffmpeg: Boolean(ffmpegPath && ffprobePath), poppler: Boolean(pdftoppmPath) };
+  const names = [ ['ffmpeg', 'FFMPEG_PATH', ['-version']], ['ffprobe', 'FFPROBE_PATH', ['-version']],
+    ['pdftoppm', 'PDFTOPPM_PATH', ['-v']], ['pandoc', 'PANDOC_PATH', ['--version']], ['qpdf', 'QPDF_PATH', ['--version']],
+    ['tesseract', 'TESSERACT_PATH', ['--version']], ['cjxl', 'CJXL_PATH', ['--version']], ['djxl', 'DJXL_PATH', ['--version']], ['dcraw_emu', 'LIBRAW_PATH', null], ['magick', 'IMAGEMAGICK_PATH', ['-version']] ];
+  const paths = await Promise.all(names.map(([name, env, args]) => findExecutable(name, env, args)));
+  const [ffmpegPath, ffprobePath, pdftoppmPath, pandocPath, qpdfPath, tesseractPath, cjxlPath, djxlPath, rawPath, magickPath] = paths;
+  let ocr = false, ocrLanguages = 'chi_sim+eng';
+  if (tesseractPath) {
+    try { const { stdout, stderr } = await run(tesseractPath, ['--list-langs']); ocr = /\bchi_sim\b/.test(stdout + stderr) && /\beng\b/.test(stdout + stderr); if (/\bchi_sim_best\b/.test(stdout + stderr)) ocrLanguages = 'chi_sim_best+eng'; } catch { /* Leave scanned conversions disabled. */ }
+  }
+  let heif = process.platform === 'darwin';
+  if (!heif && magickPath) { try { const { stdout } = await run(magickPath, ['-list', 'format']); heif = /HEIC\*?\s+\S+\s+r/.test(stdout); } catch {} }
+  const ofdFont = await fs.access(path.join(__dirname, '..', 'assets/conversion-fonts/NotoSansCJKsc-Regular.otf')).then(() => true, () => false);
+  const structure = await require('./conversion-structure.cjs').detectStructure();
+  return { ...structure, ffmpegPath, ffprobePath, pdftoppmPath, pandocPath, qpdfPath, tesseractPath, cjxlPath, djxlPath, rawPath, magickPath, heif,
+    ffmpeg: Boolean(ffmpegPath && ffprobePath), poppler: Boolean(pdftoppmPath), pandoc: Boolean(pandocPath),
+    qpdf: Boolean(qpdfPath), ocr, ocrLanguages, jxl: Boolean(cjxlPath && djxlPath), raw: Boolean(rawPath), ofdFont };
 }
 
 async function readText(input) {
@@ -93,7 +64,7 @@ async function readText(input) {
 }
 
 async function probeMedia(input, tools) {
-  if (!tools.ffprobePath) throw new Error('未找到 ffprobe，请运行 brew install ffmpeg 后重新检查鲸。');
+  if (!tools.ffprobePath) throw new Error('未找到 ffprobe，' + require('./platform-tools.cjs').installHint('ffmpeg') + ' 后重新检查鲸。');
   try {
     const { stdout } = await run(tools.ffprobePath, ['-v', 'error', '-protocol_whitelist', 'file,pipe', '-show_streams', '-show_format', '-of', 'json', input],
       { timeout: 30_000, maxBuffer: 4 * 1024 * 1024 });
@@ -102,9 +73,16 @@ async function probeMedia(input, tools) {
 }
 
 async function validateExtraInput(input, source) {
+  const previous = { image: ['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif'], audio: ['mp3', 'wav', 'flac', 'aac', 'm4a'],
+    video: ['mp4', 'mov', 'mkv', 'webm'], spreadsheet: ['xls', 'xlsx', 'csv', 'tsv'], presentation: ['ppt', 'pptx'], text: ['txt', 'md', 'markdown'] };
+  if (!previous[source.category]?.includes(source.ext)) return require('./conversion-full.cjs').validate(input, source);
+
   if (source.category === 'image') {
     try {
-      if (['heic', 'heif'].includes(source.ext)) {
+      if (['heic', 'heif'].includes(source.ext) && process.platform !== 'darwin') {
+        const bytes = await fs.readFile(input);
+        if (bytes.toString('ascii', 4, 8) !== 'ftyp' || !/heic|heix|hevc|hevx|mif1/.test(bytes.toString('ascii', 8, 40))) throw new Error();
+      } else if (['heic', 'heif'].includes(source.ext)) {
         const { stdout } = await run('/usr/bin/sips', ['-g', 'pixelWidth', '-g', 'pixelHeight', input], { timeout: 30_000 });
         const w = Number(stdout.match(/pixelWidth:\s*(\d+)/)?.[1]);
         const h = Number(stdout.match(/pixelHeight:\s*(\d+)/)?.[1]);
@@ -131,10 +109,8 @@ async function validateExtraInput(input, source) {
   } else if (source.ext === 'pptx' || source.ext === 'xlsx') {
     const entry = source.ext === 'pptx' ? 'ppt/presentation.xml' : 'xl/workbook.xml';
     try {
-      const listing = await run('/usr/bin/unzip', ['-l', input], { timeout: 10_000, maxBuffer: 4 * 1024 * 1024 });
-      const inflated = Number(listing.stdout.match(/\n\s*(\d+)\s+\d+ files?\s*$/)?.[1]);
-      if (!Number.isFinite(inflated) || inflated > 256 * 1024 * 1024) throw new Error();
-      const { stdout } = await run('/usr/bin/unzip', ['-p', input, entry], { timeout: 10_000, maxBuffer: 8 * 1024 * 1024 });
+      const entries = await require('./conversion-utils.cjs').zipEntries(input);
+      const stdout = entries.get(entry)?.toString('utf8') || '';
       if (!stdout.includes(source.ext === 'pptx' ? 'presentation' : 'workbook')) throw new Error();
     } catch { throw new Error('Office 文件无效或解压内容超过 256 MB 鲸。'); }
   } else if (['xls', 'ppt'].includes(source.ext)) {
@@ -143,16 +119,14 @@ async function validateExtraInput(input, source) {
     try { await handle.read(head, 0, 8, 0); } finally { await handle.close(); }
     if (!head.equals(Buffer.from('d0cf11e0a1b11ae1', 'hex'))) throw new Error('这个文件不是有效的旧版 Office 文件鲸。');
   } else if (source.category === 'text' || ['csv', 'tsv'].includes(source.ext)) {
-    await readText(input);
+    await require('./conversion-utils.cjs').decodeText(input);
   }
 }
 
-async function convertImage(input, target, workspace, source) {
+async function convertImage(input, target, workspace, source, tools) {
   let prepared = input;
   if (['heic', 'heif'].includes(source.ext)) {
-    prepared = path.join(workspace.dir, 'decoded.png');
-    try { await run('/usr/bin/sips', ['-s', 'format', 'png', input, '--out', prepared], { timeout: 120_000 }); }
-    catch { throw new Error('HEIC 图片解码失败鲸。请检查文件是否损坏。'); }
+    prepared = (await require('./conversion-media.cjs').preparedImage(input, source, workspace, tools)).prepared;
   }
   const metadata = await sharp(prepared, { animated: true, limitInputPixels: MAX_PIXELS }).metadata();
   const warnings = [];
@@ -308,7 +282,7 @@ async function convertText(input, target, workspace) {
 
 async function convertSlides(input, target, workspace, tools) {
   const pdf = await require('./converter.cjs').convertInWorkspace(tools.executable, input, 'pdf', workspace);
-  const { stdout } = await run(path.join(path.dirname(tools.pdftoppmPath), 'pdfinfo'), [pdf], { timeout: 30_000, env: { ...process.env, LC_ALL: 'C' } });
+  const { stdout } = await run(path.join(path.dirname(tools.pdftoppmPath), process.platform === 'win32' ? 'pdfinfo.exe' : 'pdfinfo'), [pdf], { timeout: 30_000, env: { ...process.env, LC_ALL: 'C' } });
   const pages = Number(stdout.match(/^Pages:\s*(\d+)/m)?.[1]);
   if (!pages || pages > 200) throw new Error('演示文稿图片导出最多支持 200 页鲸。');
   const folder = path.join(workspace.dir, 'slides');
@@ -324,15 +298,16 @@ async function convertSlides(input, target, workspace, tools) {
     if (!info.width || !info.height) throw new Error('幻灯片图片不完整鲸。');
   }
   const output = path.join(workspace.dir, 'result.zip');
-  await run('/usr/bin/ditto', ['--norsrc', '-c', '-k', '--keepParent', folder, output], { timeout: 120_000 });
-  await run('/usr/bin/unzip', ['-t', output], { timeout: 30_000, maxBuffer: 1024 * 1024 });
+  const archiveFiles = (await fs.readdir(folder)).map(name => ({ name: path.basename(folder) + '/' + name, path: path.join(folder, name) }));
+  await require('./conversion-utils.cjs').zipFiles(archiveFiles, output);
+  await require('./conversion-utils.cjs').zipEntries(output);
   if ((await fs.stat(output)).size > MAX_OUTPUT_BYTES) throw new Error('幻灯片图片结果超过 512 MB 鲸。');
   return { output, warnings: [`已按页码保存 ${files.length} 张图片为 ZIP 鲸。`] };
 }
 
 async function convertExtraInWorkspace(input, target, workspace, source, tools) {
   try {
-    if (source.category === 'image') return await convertImage(input, target, workspace, source);
+    if (source.category === 'image') return await convertImage(input, target, workspace, source, tools);
     if (['audio', 'video'].includes(source.category)) return await convertMedia(input, target, workspace, source, tools);
     if (source.category === 'spreadsheet') return await convertSpreadsheet(input, target, workspace, source, tools);
     if (source.category === 'text') return await convertText(input, target, workspace);

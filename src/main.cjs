@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog, Menu, screen, shell } = require('electron');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
-const { detectLibreOffice, inspectInput, convertFile } = require('./converter.cjs');
+const { detectLibreOffice, inspectInput, convertFile, convertFiles } = require('./converter.cjs');
 const { detectExtraTools, formatOptions } = require('./formats.cjs');
 const { readSound, loadSoundSettings, saveSoundSettings } = require('./sound.cjs');
 const petActions = require('./actions.js');
@@ -27,7 +27,7 @@ function trusted(event) {
 }
 
 function toolInfo(info) {
-  const { executable, ffmpegPath, ffprobePath, pdftoppmPath, ...publicInfo } = info;
+  const publicInfo = Object.fromEntries(Object.entries(info).filter(([key]) => key !== 'executable' && !key.endsWith('Path')));
   return { ...publicInfo, options: pending ? formatOptions(pending, info) : undefined };
 }
 
@@ -91,14 +91,29 @@ handler('pet:sound-select', async selection => {
 });
 handler('pet:prepare', async input => {
   if (busy) throw new Error('正在转换鲸，请稍等。');
-  const source = await inspectInput(input);
+  const inputs = Array.isArray(input) ? input : [input];
+  if (!inputs.length || inputs.length > 100) throw new Error('一次支持 1–100 个文件鲸。');
+  const sources = [];
+  for (const file of inputs) sources.push(await inspectInput(file));
+  const source = sources[0];
+  if (sources.length > 1) {
+    source.targets = source.targets.filter(target => sources.every(file => file.targets.includes(target)));
+    if (!source.targets.length) throw new Error('这些文件没有共同的转换目标鲸，请分开转换。');
+    source.target = source.targets[0]; source.inputs = sources.map(file => file.path);
+    source.items = sources.map(file => ({ ext: file.ext, category: file.category, targets: [...file.targets], pages: file.pages }));
+    source.mergeable = sources.every(file => file.category === 'image') || sources.every(file => file.category === 'pdf');
+  }
   if (!tool) await checkTool();
-  pending = source;
-  resultPath = undefined;
-  return { name: source.name, ext: source.ext, category: source.category, target: source.target, options: formatOptions(source, tool) };
+  pending = source; resultPath = undefined;
+  const options = formatOptions(source, tool);
+  return { name: sources.map(file => file.name).join('、'), names: sources.map(file => file.name), ext: source.ext, category: source.category,
+    batch: sources.length > 1, mergeable: source.mergeable, target: source.target, options };
 });
 handler('pet:clear', () => { if (!busy) pending = undefined; });
-handler('pet:convert', async target => {
+handler('pet:convert', async (target, params = {}) => {
+  if (!params || typeof params !== 'object' || Array.isArray(params)) throw new Error('无效的转换参数鲸。');
+  const allowed = ['encoding', 'textEncoding', 'pdfMode', 'groupPages', 'password', 'forceOcr', 'combineMode', 'tableMode'];
+  if (Object.keys(params).some(key => !allowed.includes(key)) || JSON.stringify(params).length > 2048) throw new Error('无效的转换参数鲸。');
   if (busy) throw new Error('正在转换鲸，请稍等。');
   if (!pending) throw new Error('先把文件拖给我鲸。');
   busy = true;
@@ -108,16 +123,18 @@ handler('pet:convert', async target => {
     const option = formatOptions(source, tool).find(item => item.target === target);
     if (!option) throw new Error('不支持这个转换目标鲸。');
     if (!option.enabled) throw new Error(option.reason + '鲸。请运行 ' + option.installCommand + ' 后重新检查。');
+    const extension = source.inputs ? (params.combineMode === 'merge' ? 'pdf' : 'zip') : require('./conversion-full.cjs').extension(source, target, params);
     const choice = await dialog.showSaveDialog(petWindow, {
       title: '保存转换结果鲸',
-      defaultPath: path.join(path.dirname(source.path), path.parse(source.name).name + '-转换.' + option.extension),
+      defaultPath: path.join(path.dirname(source.path), path.parse(source.name).name + '-转换.' + extension),
       buttonLabel: '转换并保存',
-      filters: [{ name: option.label + (option.extension === 'zip' ? '（ZIP）' : ''), extensions: [option.extension] }],
+      filters: [{ name: option.label + (extension === 'zip' ? '（ZIP）' : ''), extensions: [extension] }],
       properties: ['createDirectory', 'showOverwriteConfirmation'],
     });
     if (choice.canceled || !choice.filePath) return { canceled: true };
     petWindow.webContents.send('pet:conversion-started');
-    const result = await convertFile(source.path, choice.filePath, tool.executable, { target, tools: tool, details: true });
+    const convert = source.inputs ? convertFiles : convertFile;
+    const result = await convert(source.inputs || source.path, choice.filePath, tool.executable, { target, params, tools: tool, details: true });
     resultPath = result.path;
     pending = undefined;
     return { canceled: false, name: path.basename(resultPath), warnings: result.warnings };
@@ -185,7 +202,7 @@ function createWindow() {
     hasShadow: false, show: false,
     webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true },
   });
-  petWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+  if (process.platform === 'darwin') petWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   petWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   petWindow.webContents.on('will-navigate', event => event.preventDefault());
   petWindow.webContents.session.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
@@ -214,11 +231,11 @@ if (!app.requestSingleInstanceLock()) {
 } else {
   app.on('second-instance', () => { if (petWindow) { petWindow.show(); petWindow.focus(); } });
   app.whenReady().then(() => {
-    Menu.setApplicationMenu(Menu.buildFromTemplate([
+    Menu.setApplicationMenu(process.platform === 'darwin' ? Menu.buildFromTemplate([
       { label: '小猫转换器', submenu: [{ role: 'about' }, { type: 'separator' },
         { label: '退出小猫', accelerator: 'Command+Q', click: () => app.quit() }] },
       { role: 'editMenu' },
-    ]));
+    ]) : null);
     app.on('before-quit', event => {
       if (busy) { event.preventDefault(); dialog.showMessageBox(petWindow, { message: '正在转换文件，请完成后再退出鲸。' }); }
     });

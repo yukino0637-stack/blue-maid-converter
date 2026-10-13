@@ -1,0 +1,44 @@
+[
+  {
+    "name": "PicoDet_layout_1x_table",
+    "url": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/PicoDet_layout_1x_table_infer.tar",
+    "sha256": "d63bc4ab21b52cac7c9cd7e6922cef67a16635331a45ca0631006a8e7217f024",
+    "bytes": 7680000
+  },
+  {
+    "name": "PP-LCNet_x1_0_table_cls",
+    "url": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/PP-LCNet_x1_0_table_cls_infer.tar",
+    "sha256": "d00942b82838dd00b8a04f4db4f5cc0c146d27f4a56eb2fd3986de86e3e844bf",
+    "bytes": 6860800
+  },
+  {
+    "name": "SLANet_plus",
+    "url": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/SLANet_plus_infer.tar",
+    "sha256": "68526c5c6573a8a17cdc14805e026f11c2545e42d89a1317bb58d3e1e4b58318",
+    "bytes": 7997440
+  },
+  {
+    "name": "RT-DETR-L_wired_table_cell_det",
+    "url": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/RT-DETR-L_wired_table_cell_det_infer.tar",
+    "sha256": "da4a5ec40f1d86fd00aa6dc739e8e9d18a575b9960c0798be3ec93c47025074d",
+    "bytes": 129935360
+  },
+  {
+    "name": "RT-DETR-L_wireless_table_cell_det",
+    "url": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/RT-DETR-L_wireless_table_cell_det_infer.tar",
+    "sha256": "6f0a78b0444fb0e50f7762a78c15ca38df6402b814558ef00dbcb1f5fc2a5a3d",
+    "bytes": 129935360
+  },
+  {
+    "name": "PP-OCRv5_mobile_det",
+    "url": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/PP-OCRv5_mobile_det_infer.tar",
+    "sha256": "50446e5d01ac2a73d5319c89513281f6578414c888c602f9af13f93feefffc58",
+    "bytes": 4935680
+  },
+  {
+    "name": "PP-OCRv5_mobile_rec",
+    "url": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/PP-OCRv5_mobile_rec_infer.tar",
+    "sha256": "566b9512b34e34a9f0db54d87b51fa5a0b9ed2cf1ab7e49728cc0b8b5a64f414",
+    "bytes": 16834560
+  }
+]

@@ -6,7 +6,7 @@ const os = require('node:os');
 const { inspectInput, convertFile, probePdf, detectLibreOffice } = require('../src/converter.cjs');
 
 // 用一个本机假转换程序检查文件保护与失败处理，不把它当作 LibreOffice 实际转换验证。
-test('转换边界和原文件保护', async t => {
+test('转换边界和原文件保护', { skip: process.platform === 'win32' ? 'POSIX 可执行假工具仅用于 Mac；Windows 另跑真实转换与安全检查。' : false }, async t => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'cat-converter-test-'));
   t.after(() => fs.rm(dir, { recursive: true, force: true }));
   const source = path.join(dir, '猫咪 ; $(touch SHOULD_NOT_EXIST).DOC');

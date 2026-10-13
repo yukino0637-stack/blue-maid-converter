@@ -1,6 +1,6 @@
 # 蓝毛小女仆文件转换器
 
-用 Electron + Node.js 编写的 macOS 桌宠。支持文档、图片、音频、视频、表格、PPT 和文本转换，文件全部在本机处理，不上传文件、不连接远程服务。
+用 Electron + Node.js 编写的 macOS / Windows 桌宠文件转换器。把文件拖给蓝毛小女仆，在气泡里选择格式：支持文档、图片、音视频、表格、PPT、文本、电子书和字幕转换，以及 Word/PDF 转 Markdown、OCR、批量转换和 PDF 合并/拆分/加解密。文件全部在本机处理。
 
 由 [yukino0637-stack](https://github.com/yukino0637-stack) 提出需求并通过 AI 辅助的 **vibe coding** 逐步实现。人物形象和动画来自 **[PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet)**，不是本项目自行绘制。
 
@@ -19,9 +19,18 @@
 
 固定版本、逐文件哈希、复用边界和详细功能归属见 [ATTRIBUTION.md](ATTRIBUTION.md)；底层依赖见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
-## 第一次启动
+## 下载独立安装包
 
-目标平台为 macOS Apple Silicon，Node.js 22 或更新版本。先安装 Node.js、Git 和 Homebrew，再执行：
+在 [GitHub Releases](https://github.com/yukino0637-stack/blue-maid-converter/releases) 下载：
+
+- macOS Apple Silicon：DMG 安装包或独立应用 ZIP。
+- Windows 10/11 x64：EXE 安装向导，创建桌面和开始菜单快捷方式。
+
+安装包包含 Electron、Node.js 和程序依赖，无需源码目录或另装 Node.js。转换工具按需单独安装；本版没有开发者证书，Mac 临时签名未公证、Windows 未签名。详细步骤与工具下载地址见 [安装说明](docs/INSTALL.md)。公开包不包含无再分发授权的小黄鸭音频，可导入自有 MP3/WAV。
+
+## 从源码第一次启动
+
+源码开发需要 Node.js 22.13 或更新版本，支持 macOS Apple Silicon / Windows x64。下面命令适用于 Mac；Windows 转换工具安装见 docs/INSTALL.md。先安装 Node.js、Git 和 Homebrew，再执行：
 
 ```bash
 brew install --cask libreoffice
@@ -34,7 +43,7 @@ npm start
 
 LibreOffice 负责办公文档，FFmpeg 负责音视频，Poppler 负责逐页导出图片；已经安装时可跳过对应安装行。npm ci 按锁文件安装依赖；npm start 启动桌宠，关闭终端进程也会关闭桌宠。
 
-锁定 Electron 44.5.1，Apple Silicon 默认安装 arm64 版本。当前为源码开发版，没有签名、公证或独立安装包；Windows/Linux 未验收。
+锁定 Electron 44.5.1，Apple Silicon 默认安装 arm64 版本。独立打包配置提供 macOS arm64 和 Windows x64；Linux 未验收。独立应用及 Windows 安装后验证由发布工作流执行，原有详细转换矩阵是 Mac 的样例证据，不能直接算作 Windows 的全部格式验收。
 
 也可以双击仓库中的「蓝毛小女仆.app」启动。它读取同目录的现有项目，需先 npm ci，并保留与 src、assets、node_modules 的相对位置；重复启动会使用已有实例。
 
@@ -64,10 +73,10 @@ launchctl bootout gui/$(id -u)/local.blue-maid-converter.hotkey
 
 ## 怎么用
 
-1. 从 Finder 把一个支持的文件拖到桌宠身上。
+1. 从 Finder 把一个或多个支持的文件拖到桌宠身上。
 2. 文件图标化为粒子消失，桌宠继续播放待机动画。**原文件不受影响**。
 3. 桌宠左上方出现白色气泡，顶部显示「要转换为什么格式鲸」。
-4. 气泡根据文件类型显示可转换格式。多个格式用两列按钮排列；较长说明可在卡片内滚动。点击格式，再选择保存位置。Word 文件仍可选 PDF，PDF 仍可选 Word（`.docx`）。
+4. 气泡根据文件类型显示可转换格式。多个格式用两列按钮排列；较长说明可在卡片内滚动。点击格式，再选择保存位置。Word/PDF 现在也能选择 Markdown（`.md`）；有必要参数时会先显示参数表单。
 5. 确认保存位置后，桌宠切换为循环工作动画；成功后播放一次结束动画，播完自动回到待机。失败则回到待机并显示中文原因。
 6. 成功后点击「在 Finder 中查看」。取消保存则回到格式选择，可重试。
 
@@ -101,31 +110,11 @@ launchctl bootout gui/$(id -u)/local.blue-maid-converter.hotkey
 
 ## 支持格式与限制
 
-| 输入 | 可选输出 |
-| --- | --- |
-| DOC / DOCX | PDF |
-| PDF | DOCX（实验功能） |
-| JPG / JPEG / PNG / WebP | JPG / PNG / WebP，排除与输入相同的格式 |
-| HEIC / HEIF | JPG / PNG / WebP |
-| MP3 / WAV / FLAC / AAC / M4A | 这五种音频格式互转，排除相同格式 |
-| MOV / MKV / WebM | MP4 / MP3 / WAV / GIF |
-| MP4 | MP3 / WAV / GIF |
-| XLSX / XLS / CSV / TSV | XLSX / CSV / TSV，排除相同格式 |
-| PPT / PPTX | PDF，或逐页 JPG / PNG（保存为 ZIP） |
-| TXT | MD（原文字保留，不自动生成标题） |
-| MD / Markdown | TXT（解析并去除排版标记，保留代码和链接文字） |
+已扩展为文档、Markdown、PDF、图片/RAW、音视频、表格、演示文稿、结构化文本、电子书、字幕和 ZIP 图片转换。支持 Word/PDF→Markdown、中英文 OCR、图片/PDF 合并、PDF 拆分/加解密，以及多文件分别转换。格式参数只出现在文件转换气泡中，人物、活动、声音与启动器沿用原行为。
 
-- 单次一个文件，输入上限 100 MB；未加入批量队列、OCR、字幕、电子书或 RAW 转换。
-- 文档及幻灯片图片转换最多两分钟；音视频最多 30 分钟。音视频及图片 ZIP 输出上限 512 MB，超过限制会失败并清理，不能把截短结果算成功。
-- 图片最多 4000 万像素；JPG 不支持透明，转换时填白底并提示。JPEG 的 EXIF 方向在转换时校正。动画 WebP 转静态图片只保留第一帧并提示。
-- MP4 默认 H.264 视频＋AAC 音频；GIF 宽度不超过 720 像素、12 帧/秒、无声音，不自动截短。提取声音时没有音轨会中文报错。
-- CSV/TSV 只导出第一张工作表的值，不保留公式、样式或其他工作表；未保存计算结果的公式会失败，需先在 Excel 计算并保存。分隔文本导入保留字符串，避免把 `00123` 自动变成 `123`。表格上限 10 万行／100 万单元格。
-- PPT 图片每页一张，按页码保存到 ZIP 中的 `slides/`；最多 200 页，最长边不超过 2048 像素。图片和 PDF 不保留演示动画。
-- TXT/MD/CSV/TSV 接受 UTF-8 或带 BOM 的 UTF-16；其他编码请先另存为 UTF-8。
-- PDF→Word 为实验功能，排版可能变化，扫描件不会自动识别文字。复杂 Office 文件也可能因字体或兼容性改变排版，请核对结果。
-- 不覆盖原文件或任何已有目标文件；默认名为 `原名-转换.目标扩展名`，多页图片使用 `.zip`。
-- Office 压缩文件的解压内容上限 256 MB；损坏、加密、超限或无法保存都会显示中文原因。
-- 窗口继续透明、无边框、置顶、可拖动；只有人物、气泡和菜单附近接收鼠标。
+完整输入/输出清单、工具安装、附件保存和限制见 [文件转换说明](docs/CONVERSION-FORMATS.md)。98 个扩展名是源码规则覆盖数，包含别名和实验输入，不代表每种文件编码或全部组合都已实测。本机可选结构引擎已通过扫描表格与合并表头样例；复杂扫描表格仍不能保证达到上游 Windows 专用引擎的恢复质量。RAW、WPS 等缺少有效样例的输入明确列为未验证，详见 [本次验收记录](docs/CONVERSION-VALIDATION.md)。
+
+原文件和任何已有结果文件都不会被覆盖。单文件上限 100 MB；批量最多 100 个、总计 256 MB；输出上限 512 MB。OCR、跨格式排版及复杂对象的结果需要核对。
 
 ## 代码在做什么
 
@@ -135,6 +124,7 @@ launchctl bootout gui/$(id -u)/local.blue-maid-converter.hotkey
 | `src/preload.cjs` | 界面和 Node.js 之间的一座小桥，只开放需要的操作。 |
 | `src/converter.cjs` | 检查文件、保留 Word/PDF 转换、验证输出、保护保存和清理。 |
 | `src/formats.cjs` | 列出可选格式、检查媒体工具，并处理图片、音视频、表格、PPT 图片和文本。 |
+| `src/conversion-*.cjs` / `conversion-routes.json` | 新增转换的格式规则、文档/图片/媒体/PDF 处理及安全文件工具。 |
 | `src/index.html` / `style.css` | 人物、白色气泡和按钮的外观。 |
 | `src/renderer.js` | 拖入、粒子、视频切换、格式选择和结果反馈的流程。 |
 | `src/sound.cjs` | 检查导入音效的格式和大小，并把音效副本与选择保存在本机。 |
@@ -149,7 +139,13 @@ launchctl bootout gui/$(id -u)/local.blue-maid-converter.hotkey
 npm test
 npm run test:integration
 npm run test:formats
+npm run test:full-matrix
+npm run test:full-formats-extra
+npm run test:full-formats-ocr
+npm run test:pdf-structure   # 需先安装可选结构引擎
 ```
+
+`test:full-matrix` 依赖前面的 `test:formats` 生成基础样例；`test:full-formats-extra` 使用矩阵样例补验图片、公式、动图时序、DOC/XLSM/MOBI 和中文编码。界面参数、批量和取消检查为 `test:full-formats-ui`，使用下述 Playwright 配置。完整检查范围与未验证项见本次验收记录。
 
 第一个命令检查无效输入、特殊文件名、原文件保护、已有目标保护、失败结果和临时文件清理。它使用假转换程序验证文件保护逻辑，不能替代真实转换检查。
 
@@ -166,3 +162,13 @@ npm run test:formats
 `npm run test:menu` 使用同样的 Playwright 设置，检查菜单、MP3/WAV 导入、损坏音频保护、重启保存、默认音效恢复和退出。使用隔离的临时配置，不修改日常使用的音效；原生文件选择对话框在测试中被替代。
 
 FFmpeg、ffprobe、Poppler 位于非标准位置时，可分别设置 `FFMPEG_PATH`、`FFPROBE_PATH`、`PDFTOPPM_PATH` 为完整可执行文件路径。Poppler 的 `pdfinfo` 必须在 `pdftoppm` 同一目录。
+
+## 打包与发布
+
+```bash
+npm ci
+npm run dist:mac   # 在 Mac 上生成 arm64 DMG/ZIP
+npm run dist:win   # 在 Windows 上生成 x64 EXE
+```
+
+使用 electron-builder 26.15.3；白名单只包含程序、人物素材、字体及许可，不包含测试数据、私人文件、模型、音效和源码启动器的构建缓存。GitHub Actions 在两个目标系统分别构建，检查包内容并用隔离配置运行独立应用；两个目标均通过后才上传 Release 与 SHA-256。转换程序继续使用本机工具，不把第三方引擎重标为自制功能。

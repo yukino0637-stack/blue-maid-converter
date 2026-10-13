@@ -1,0 +1,14 @@
+const assert = require('node:assert/strict');
+const { listPackage, extractFile } = require('@electron/asar');
+const archive = process.argv[2];
+if (!archive) throw new Error('请提供 app.asar 路径');
+const files = listPackage(archive).map(name => name.replaceAll('\\', '/'));
+const forbidden = files.filter(name => /^\/(?:artifacts|test|\.local-tools|\.git|\.env|native-launcher\/build|dist)(?:\/|$)/.test(name) || /Ya1\.mp3|飞夺泸定桥|cat-.*transparent\.webm/.test(name));
+assert.deepEqual(forbidden, []);
+const json = file => JSON.parse(extractFile(archive, file).toString());
+assert.equal(json('package.json').version, '0.2.0');
+const routes = json('src/conversion-routes.json').routes; assert.equal(routes.length, 98);
+assert.ok(files.some(name => /node_modules\/@img\/sharp-(?:darwin-arm64|win32-x64)\//.test(name)));
+assert.equal(files.filter(name => /assets\/dsh-pet\/.*\.webm$/.test(name)).length, 106);
+assert.ok(files.some(name => name.endsWith('/assets/conversion-fonts/OFL.txt')));
+console.log('PASS 安装包版本、完整格式规则、106 份动画、原生图片依赖、字体许可；未包含测试数据、私人文件、模型或小黄鸭音效。');

@@ -1,0 +1,26 @@
+const assert = require('node:assert/strict');
+const ExcelJS = require('exceljs');
+const { PDFDocument, StandardFonts } = require('pdf-lib');
+const { fs, path } = require('../src/conversion-utils.cjs');
+const { detectExtraTools } = require('../src/formats.cjs');
+const { detectLibreOffice, convertFile } = require('../src/converter.cjs');
+(async () => {
+  const tools = { ...await detectLibreOffice(), ...await detectExtraTools() };
+  assert.ok(tools.structure, '先运行 npm run setup:pdf-structure');
+  const root = path.resolve('artifacts/pdf-structure-tests'); await fs.rm(root, { recursive: true, force: true });
+  const { scanned, image } = await require('../scripts/pdf-structure-probe.cjs')(root, tools.structurePath, tools.pdftoppmPath);
+  const output = path.join(root, 'structured.xlsx');
+  await convertFile(scanned, output, tools.executable, { target: 'xlsx', tools, params: { tableMode: 'structure' } });
+  const book = new ExcelJS.Workbook(); await book.xlsx.readFile(output);
+  assert.equal(book.worksheets[0].getCell('A1').value, 'MERGED_HEADER');
+  assert.equal(book.worksheets[0].getCell('C4').value, '456');
+  assert.ok(book.worksheets[0].model.merges.includes('A1:C1'));
+  assert.equal(book.worksheets.length, 2);
+  const pdf = await PDFDocument.create(), png = await pdf.embedPng(await fs.readFile(image)), font = await pdf.embedFont(StandardFonts.Helvetica);
+  const page = pdf.addPage([800, 700]); page.drawText('NATIVE_PAGE_HEADER', { x: 70, y: 650, font, size: 22 });
+  page.drawImage(png, { x: 0, y: 0, width: 800, height: 600 });
+  const mixed = path.join(root, 'mixed.pdf'), md = path.join(root, 'mixed.md'); await fs.writeFile(mixed, await pdf.save());
+  await convertFile(mixed, md, tools.executable, { target: 'md', tools });
+  const text = await fs.readFile(md, 'utf8'); assert.match(text, /NATIVE_PAGE_HEADER/); assert.match(text, /MERGED_HEADER/); assert.match(text, /456/);
+  console.log('PASS 扫描 PDF→Excel 的行列、合并区域、原文；混合 PDF→Markdown 保留原生文字和扫描正文。');
+})().catch(error => { console.error(error.stack); process.exitCode = 1; });

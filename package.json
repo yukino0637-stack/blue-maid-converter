@@ -1,8 +1,8 @@
 {
   "name": "cat-file-converter",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "本地文档、图片、音视频与表格转换桌宠",
+  "description": "本地文件转换桌宠：文档、图片、音视频、表格、字幕、OCR、批量转换与 PDF 工具，支持 macOS 和 Windows。",
   "main": "src/main.cjs",
   "scripts": {
     "start": "electron .",
@@ -11,19 +11,48 @@
     "test:formats": "node test/formats-integration.cjs",
     "test:formats-ui": "node test/formats-ui.cjs",
     "test:ui": "node test/ui-smoke.cjs",
-    "test:menu": "node test/menu-ui.cjs"
+    "test:menu": "node test/menu-ui.cjs",
+    "test:full-formats": "node test/full-formats-integration.cjs",
+    "test:full-matrix": "FULL_MATRIX=1 node test/full-formats-integration.cjs",
+    "test:full-formats-extra": "node test/full-formats-extra.cjs",
+    "test:full-formats-ui": "node test/full-formats-ui.cjs",
+    "setup:pdf-structure": "node scripts/setup-pdf-structure.cjs",
+    "test:pdf-structure": "node test/pdf-structure-integration.cjs",
+    "test:full-formats-ocr": "node test/full-formats-ocr.cjs",
+    "dist:mac": "electron-builder --mac --arm64 --publish never",
+    "dist:win": "electron-builder --win --x64 --publish never",
+    "test:release": "node test/release-integration.cjs"
   },
   "overrides": {
-    "exceljs": { "uuid": "11.1.1" }
+    "exceljs": {
+      "uuid": "11.1.1"
+    },
+    "mammoth": {
+      "argparse": "3.0.2"
+    },
+    "fast-xml-parser": "$fast-xml-parser"
   },
   "devDependencies": {
-    "electron": "44.5.1"
+    "electron": "44.5.1",
+    "electron-builder": "26.15.3"
   },
   "dependencies": {
+    "@lingo-reader/mobi-parser": "0.4.6",
+    "@miconvert/ofd-to-pdf": "0.2.3",
     "csv-parse": "7.0.3",
     "csv-stringify": "6.9.0",
     "exceljs": "4.4.0",
+    "fast-xml-parser": "5.11.2",
+    "js-yaml": "5.4.3",
+    "mammoth": "1.13.0",
     "marked": "18.0.14",
-    "sharp": "0.35.5"
+    "pdf-lib": "1.17.1",
+    "pdfjs-dist": "6.4.299",
+    "sanitize-html": "2.18.0",
+    "sharp": "0.35.5",
+    "turndown": "7.2.4",
+    "turndown-plugin-gfm": "1.0.2",
+    "yauzl": "3.4.0",
+    "yazl": "3.3.1"
   }
 }

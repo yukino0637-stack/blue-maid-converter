@@ -1,5 +1,6 @@
 const $ = id => document.getElementById(id);
 const bubble = $('bubble');
+const formatTemplate = $('format').cloneNode(true);
 const petArea = $('pet-area');
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 let state = 'idle';
@@ -298,7 +299,7 @@ function toolNotice() {
   const missing = file?.options.filter(option => !option.enabled) || [];
   if (missing.length || (!file && !tool?.available)) {
     const commands = [...new Set(missing.map(option => option.installCommand))];
-    $('install').textContent = commands.join('\n') || 'brew install --cask libreoffice';
+    $('install').textContent = commands.join('\n') || tool?.installCommand || '请安装缺少的转换工具后重新检查。';
     $('install').hidden = false;
     $('recheck').hidden = false;
     if (!$('message').textContent) $('message').textContent = toolError || (missing.length ? missing.map(option => option.reason).filter((reason, i, all) => all.indexOf(reason) === i).join('；') + '鲸。' : '请先安装本机 LibreOffice 鲸。');
@@ -312,7 +313,7 @@ function showFormats(message = '') {
   $('file-name').textContent = file.name;
   $('file-name').title = file.name;
   $('file-name').hidden = false;
-  const first = $('format');
+  const first = $('format') || formatTemplate.cloneNode(true);
   $('formats').replaceChildren(first);
   for (const [index, option] of file.options.entries()) {
     const button = index === 0 ? first : first.cloneNode(true);
@@ -329,7 +330,7 @@ function showFormats(message = '') {
     button.hidden = false;
   }
   $('formats').hidden = false;
-  $('pdf-warning').textContent = '实验功能：排版可能变化；扫描件不会识别为可编辑文字。';
+  $('pdf-warning').textContent = '排版可能变化；扫描页使用中英文 OCR，识别文字和表格请核对。';
   $('pdf-warning').hidden = file.category !== 'pdf';
   toolNotice();
 }
@@ -398,13 +399,13 @@ petArea.addEventListener('drop', async event => {
   petArea.classList.remove('drag-over');
   if (['receiving', 'converting', 'checking'].includes(state)) return;
   const files = [...event.dataTransfer.files];
-  if (files.length !== 1) {
-    showBubble('一次接一个文件鲸', '请只拖入一个文件。');
+  if (!files.length || files.length > 100) {
+    showBubble('文件数量超出范围鲸', '一次可转换 1–100 个文件。');
     return;
   }
   setState('receiving');
   try {
-    file = await window.cat.prepareFile(files[0]);
+    file = files.length === 1 ? await window.cat.prepareFile(files[0]) : await window.cat.prepareFiles(files);
     await receiveAnimation();
     showFormats();
     $('format').focus({ preventScroll: true });
@@ -416,26 +417,65 @@ petArea.addEventListener('drop', async event => {
   }
 });
 
-$('formats').addEventListener('click', async event => {
-  const button = event.target.closest('[data-target]');
-  if (!button || state !== 'choosing' || button.disabled) return;
-  const target = button.dataset.target;
+// These controls belong only to the file-conversion bubble.
+function conversionParameters(target) {
+  const specs = [];
+  if (file.batch && file.mergeable && target === 'pdf') specs.push(['combineMode', '多文件处理', ['batch:分别转换（ZIP）', 'merge:按列表顺序合并 PDF']]);
+  if (file.category === 'pdf' && target === 'pdf') {
+    specs.push(['pdfMode', 'PDF 操作', ['split:每页拆分（ZIP）', 'group:每 N 页拆分（ZIP）', 'encrypt:AES-256 加密（PDF）', 'decrypt:原密码解密（PDF）']]);
+    specs.push(['groupPages', '每组页数（分组拆分时使用）', 'number']);
+    specs.push(['password', '密码（加解密时使用）', 'password']);
+  } else if (file.category === 'pdf' && !file.batch) {
+    specs.push(['password', '原 PDF 密码（未加密可留空）', 'password']);
+    if (['txt', 'md', 'html', 'docx', 'xlsx'].includes(target)) specs.push(['forceOcr', '文字提取', ['auto:自动识别扫描页', 'yes:全部页面使用 OCR']]);
+  }
+  if (file.category === 'pdf' && target === 'xlsx') specs.push(['tableMode', '表格提取', ['auto:自动（扫描页优先结构识别）', 'position:文字位置推测', 'structure:本机表格结构识别']]);
+  if (file.category === 'video' && ['mp4', 'mov', 'mkv'].includes(target)) specs.push(['encoding', '视频编码', ['h264:H.264（兼容优先）', 'h265:H.265', 'av1:AV1（较慢）']]);
+  if (file.category === 'text' && !['epub', 'mobi'].includes(file.ext)) specs.push(['textEncoding', '原文编码', ['auto:自动检测', 'utf-8:UTF-8', 'gb18030:GB18030', 'utf-16le:UTF-16 LE', 'utf-16be:UTF-16 BE']]);
+  if (!specs.length) return startConversion(target, {});
+  showBubble('转换参数鲸', file.batch ? '文件顺序：' + file.names.join(' → ') : '填写后选择保存位置。');
+  $('file-name').textContent = file.name; $('file-name').hidden = false;
+  const form = document.createElement('form');
+  form.style.cssText = 'display:grid;gap:10px;padding:8px;grid-column:1 / -1;';
+  const fields = new Map();
+  for (const [name, title, type] of specs) {
+    const label = document.createElement('label'); label.textContent = title; label.style.cssText = 'display:grid;gap:4px;font-size:12px';
+    const field = document.createElement(Array.isArray(type) ? 'select' : 'input');
+    field.name = name; field.style.cssText = 'width:100%;box-sizing:border-box;padding:7px;border:1px solid #bac6d6;border-radius:8px;background:#fff;color:#243044';
+    if (Array.isArray(type)) for (const value of type) { const index = value.indexOf(':'); const option = document.createElement('option'); option.value = value.slice(0, index); option.textContent = value.slice(index + 1); field.append(option); }
+    else { field.type = type; if (type === 'number') { field.min = '1'; field.max = '200'; field.value = '2'; } if (type === 'password') { field.maxLength = 256; field.autocomplete = 'off'; } }
+    fields.set(name, field); label.append(field); form.append(label);
+  }
+  const submit = document.createElement('button'); submit.type = 'submit'; submit.textContent = '选择位置并转换';
+  const back = document.createElement('button'); back.type = 'button'; back.textContent = '返回格式列表'; back.addEventListener('click', () => showFormats());
+  form.append(submit, back);
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const params = Object.fromEntries([...fields].map(([name, field]) => [name, name === 'forceOcr' ? field.value === 'yes' : name === 'groupPages' ? Number(field.value) : field.value]));
+    if (!params.password) delete params.password;
+    if (params.pdfMode && ['encrypt', 'decrypt'].includes(params.pdfMode) && !params.password && params.combineMode !== 'merge') { $('message').textContent = '加解密需要填写密码鲸。'; return; }
+    startConversion(target, params);
+  });
+  const template = $('format') || formatTemplate.cloneNode(true); template.hidden = true;
+  $('formats').replaceChildren(form, template); $('formats').hidden = false;
+  updateRegions();
+}
+async function startConversion(target, params) {
   setState('converting');
   showBubble('正在转换鲸', '选择保存位置后，我会在本机完成转换。');
   try {
-    const result = await window.cat.convert(target);
-    if (result.canceled) {
-      showFormats('已取消保存，可以重新选择鲸。');
-      return;
-    }
+    const result = await window.cat.convert(target, params);
+    if (result.canceled) { showFormats('已取消保存，可以重新选择鲸。'); return; }
     file = undefined;
     setState('success');
     showBubble('转换好啦鲸', [result.name, ...(result.warnings || [])].join('\n'));
-    $('reveal').hidden = false;
-    updateRegions();
-  } catch (error) {
-    showFormats(error.message);
-  }
+    $('reveal').hidden = false; updateRegions();
+  } catch (error) { showFormats(error.message); }
+}
+$('formats').addEventListener('click', event => {
+  const button = event.target.closest('[data-target]');
+  if (!button || state !== 'choosing' || button.disabled) return;
+  conversionParameters(button.dataset.target);
 });
 $('reveal').addEventListener('click', async () => {
   try { await window.cat.reveal(); } catch (error) { $('message').textContent = error.message; }

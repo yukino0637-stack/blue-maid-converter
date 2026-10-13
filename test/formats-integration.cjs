@@ -29,7 +29,8 @@ const hash = async file => createHash('sha256').update(await fs.readFile(file)).
   await sharp(file('image.png')).flatten({ background: '#ffffff' }).jpeg().toFile(file('image.jpg'));
   await sharp(file('image.png')).webp().toFile(file('image.webp'));
   await sharp(file('image.png')).flatten({ background: '#ffffff' }).withMetadata({ orientation: 6 }).jpeg().toFile(file('rotated.jpg'));
-  await run('/usr/bin/sips', ['-s', 'format', 'heic', file('image.png'), '--out', file('photo.heic')]);
+  if (process.platform === 'darwin') await run('/usr/bin/sips', ['-s', 'format', 'heic', file('image.png'), '--out', file('photo.heic')]);
+  else { assert.ok(tools.heif); await run(tools.magickPath, [file('image.png'), file('photo.heic')]); }
   await fs.copyFile(file('photo.heic'), file('photo.heif'));
   for (const ext of ['mp3', 'wav', 'flac', 'aac', 'm4a']) {
     await run(tools.ffmpegPath, ['-hide_banner', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', 'sine=frequency=440:duration=2', file('audio.' + ext)]);
@@ -128,10 +129,10 @@ const hash = async file => createHash('sha256').update(await fs.readFile(file)).
     for (const target of ['pdf', 'jpg', 'png']) {
       await check('slides.' + source, target, async output => {
         if (target === 'pdf') {
-          const { stdout } = await run('/opt/homebrew/bin/pdfinfo', [output]); assert.match(stdout, /Pages:\s*2/);
+          const { stdout } = await run(path.join(path.dirname(tools.pdftoppmPath), process.platform === 'win32' ? 'pdfinfo.exe' : 'pdfinfo'), [output]); assert.match(stdout, /Pages:\s*2/);
           const text = await run('/opt/homebrew/bin/pdftotext', [output, '-']); assert.match(text.stdout, /DESKTOP PET SLIDE 1/); assert.match(text.stdout, /中文幻灯片/);
         } else {
-          const { stdout } = await run('/usr/bin/unzip', ['-Z1', output]);
+          const stdout = [...(await require('../src/conversion-utils.cjs').zipEntries(output)).keys()].join('\n');
           assert.equal(stdout.split('\n').filter(name => name.endsWith('.' + target)).length, 2);
         }
       });

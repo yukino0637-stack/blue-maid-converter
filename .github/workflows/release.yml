@@ -1,0 +1,100 @@
+name: Build and verify desktop releases
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v0.2.0']
+permissions:
+  contents: read
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, windows-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - name: Install Mac conversion tools
+        if: runner.os == 'macOS'
+        run: |
+          brew install --cask libreoffice
+          brew install ffmpeg poppler pandoc qpdf
+      - name: Install Windows conversion tools
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install libreoffice-fresh ffmpeg poppler pandoc qpdf imagemagick -y --no-progress
+          $env:PATH = [Environment]::GetEnvironmentVariable('PATH','Machine') + ';' + [Environment]::GetEnvironmentVariable('PATH','User') + ';C:\ProgramData\chocolatey\bin'
+          "PATH=$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          Copy-Item assets/conversion-fonts/NotoSansCJKsc-Regular.otf C:\Windows\Fonts\NotoSansCJKsc-Regular.otf
+          New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts' -Name 'Noto Sans CJK SC (OpenType)' -Value 'NotoSansCJKsc-Regular.otf' -PropertyType String -Force
+      - run: npm test
+      - run: npm run test:formats
+      - run: npm run test:release
+      - name: Build Mac packages
+        if: runner.os == 'macOS'
+        run: npm run dist:mac
+      - name: Build Windows installer
+        if: runner.os == 'Windows'
+        run: npm run dist:win
+      - name: Inspect Mac package
+        if: runner.os == 'macOS'
+        run: node scripts/check-package.cjs 'dist/mac-arm64/蓝毛小女仆.app/Contents/Resources/app.asar'
+      - name: Inspect and install Windows package
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          node scripts/check-package.cjs dist/win-unpacked/resources/app.asar
+          $installer = (Get-ChildItem dist/*Windows*x64*Setup.exe)[0].FullName
+          $installDir = Join-Path $env:RUNNER_TEMP 'BlueMaidInstalled'
+          $process = Start-Process -FilePath $installer -ArgumentList '/S', "/D=$installDir" -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw 'Installer failed' }
+          if (!(Test-Path "$installDir\蓝毛小女仆.exe")) { throw 'Installed executable missing' }
+          "TEST_APP_EXE=$installDir\蓝毛小女仆.exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Test Mac packaged app
+        if: runner.os == 'macOS'
+        env:
+          TEST_APP_EXE: ${{ github.workspace }}/dist/mac-arm64/蓝毛小女仆.app/Contents/MacOS/蓝毛小女仆
+          TEST_INPUTS_DIR: artifacts/release-tests/inputs
+        run: npm run test:full-formats-ui
+      - name: Test installed Windows app
+        if: runner.os == 'Windows'
+        env:
+          TEST_INPUTS_DIR: artifacts/release-tests/inputs
+        run: npm run test:full-formats-ui
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ runner.os }}
+          path: |
+            dist/BlueMaid-*.dmg
+            dist/BlueMaid-*.zip
+            dist/BlueMaid-*-Setup.exe
+          if-no-files-found: error
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: packages-*
+          merge-multiple: true
+          path: release-assets
+      - name: Publish verified packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd release-assets
+          sha256sum BlueMaid-* > SHA256SUMS.txt
+          cd ..
+          gh release create v0.2.0 release-assets/* --target "$GITHUB_SHA" --title '蓝毛小女仆 v0.2.0 · macOS / Windows' --notes-file docs/RELEASE-v0.2.0.md

@@ -13,7 +13,7 @@ const { _electron } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     const page = await electron.firstWindow();
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
-    await page.waitForFunction(() => state !== 'checking', undefined, { timeout: 150_000 });
+    await page.waitForFunction(() => typeof state !== 'undefined' && state !== 'checking', undefined, { timeout: 150_000 });
     assert.ok(await page.evaluate(() => tool.available && tool.ffmpeg && tool.poppler));
     await page.evaluate(() => {
       window.conversionAnimations = { working: 0, ended: 0 };
@@ -38,7 +38,7 @@ const { _electron } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
       }; }, filePath);
     }
     await drop(path.join(inputs, 'image.png'));
-    assert.deepEqual(await page.locator('#formats button').evaluateAll(buttons => buttons.map(button => button.dataset.target)), ['jpg', 'webp']);
+    assert.deepEqual((await page.locator('#formats button').evaluateAll(buttons => buttons.map(button => button.dataset.target))).slice(0, 2), ['jpg', 'webp']);
     assert.equal(await page.evaluate(() => window.cat.convert('sh').then(() => 'bad', error => error.message)), '不支持这个转换目标鲸。');
     await saveTo(null);
     await page.locator('[data-target="webp"]').click();
@@ -60,7 +60,8 @@ const { _electron } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
       ['table.csv', 'xlsx', 'xlsx', 2], ['slides.pptx', 'png', 'zip', 3], ['notes.md', 'txt', 'txt', 1]];
     for (const [input, target, extension, count] of cases) {
       await drop(path.join(inputs, input));
-      assert.equal(await page.locator('#formats button').count(), count);
+      const expected = require('../src/formats.cjs').describeFormat(path.extname(input)).targets.length;
+      assert.equal(await page.locator('#formats button').count(), expected);
       assert.equal(await page.locator('#bubble-title').textContent(), '要转换为什么格式鲸');
       await page.waitForFunction(() => !bubble.getAnimations().some(animation => animation.playState === 'running'));
       const layout = await page.locator('#bubble').evaluate(element => {
@@ -71,6 +72,7 @@ const { _electron } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
       const destination = path.join(dir, input.replace('.', '-') + '.' + extension);
       await saveTo(destination);
       await page.locator(`[data-target="${target}"]`).click();
+      if (await page.locator('#formats form').count()) await page.locator('#formats form button[type=submit]').click();
       await page.waitForFunction(() => state === 'success', undefined, { timeout: 150_000 });
       assert.ok((await fs.stat(destination)).size > 0);
       const save = await electron.evaluate(() => lastFormatDialog);

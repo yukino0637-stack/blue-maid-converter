@@ -1,0 +1,48 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs/promises');
+const path = require('node:path');
+const os = require('node:os');
+const { zipEntries, zipFiles, xml, safeHtml, decodeText } = require('../src/conversion-utils.cjs');
+const { inspectInput, convertFile } = require('../src/converter.cjs');
+const { describeFormat, formatOptions } = require('../src/formats.cjs');
+const { extension } = require('../src/conversion-full.cjs');
+test('格式类别、必要工具和结果类型按实际路线分别检查', () => {
+  assert.equal(describeFormat('srt').category, 'subtitle');
+  assert.ok(describeFormat('docx').targets.includes('md'));
+  assert.ok(describeFormat('pdf').targets.includes('md'));
+  assert.ok(describeFormat('cr3').targets.includes('jxl'));
+  assert.ok(!describeFormat('csv').targets.includes('xls'));
+  assert.equal(formatOptions(describeFormat('docx'), {}).find(o => o.target === 'md').enabled, true);
+  assert.equal(formatOptions(describeFormat('png'), {}).find(o => o.target === 'md').enabled, false);
+  assert.equal(formatOptions(describeFormat('pdf'), {}).find(o => o.target === 'txt').enabled, true);
+  assert.equal(formatOptions(describeFormat('pptx'), { available: true }).find(o => o.target === 'odp').extension, 'odp');
+  assert.equal(extension({ category: 'pdf', pages: 1 }, 'png'), 'png');
+  assert.equal(extension({ category: 'pdf', pages: 2 }, 'png'), 'zip');
+  assert.equal(extension({ category: 'pdf' }, 'pdf', { pdfMode: 'encrypt' }), 'pdf');
+  assert.equal(extension({ category: 'pdf' }, 'pdf', { pdfMode: 'group' }), 'zip');
+});
+test('不执行 HTML 脚本、不读取 XML 外部实体、不接受 ZIP 路径穿越', async t => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'pet-full-boundary-')); t.after(() => fs.rm(dir, { recursive: true, force: true }));
+  assert.throws(() => xml('<!DOCTYPE root [<!ENTITY read SYSTEM "file:///etc/passwd">]><root>&read;</root>'), /XML/);
+  const html = safeHtml('<script>alert(1)</script><img src="https://example.com/a.png" onerror="alert(1)"><p>保留文字</p>');
+  assert.ok(!/script|onerror|https:/.test(html)); assert.match(html, /保留文字/);
+  const archive = path.join(dir, 'good.zip'); await zipFiles([{ name: 'safe-name.txt', bytes: Buffer.from('safe') }], archive);
+  const bytes = await fs.readFile(archive); const patched = Buffer.from(bytes.toString('latin1').replaceAll('safe-name.txt', '../oops__.txt'), 'latin1');
+  const bad = path.join(dir, 'bad.zip'); await fs.writeFile(bad, patched);
+  await assert.rejects(zipEntries(bad), /不安全|无法读取/);
+  await assert.rejects(fs.access(path.join(dir, '..', 'oops__.txt')));
+});
+test('结构化文本必须实际解析；失败不留下结果，不覆盖附件目录', async t => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'pet-structured-')); t.after(() => fs.rm(dir, { recursive: true, force: true }));
+  const bad = path.join(dir, 'bad.json'); await fs.writeFile(bad, '{not JSON}');
+  const output = path.join(dir, 'result.csv'); await assert.rejects(convertFile(bad, output, null, { target: 'csv' }), /JSON/); await assert.rejects(fs.access(output));
+  const yaml = path.join(dir, 'sample.yaml'); await fs.writeFile(yaml, '姓名: 小鲸\n值: 123\n');
+  const json = path.join(dir, 'result.json'); await convertFile(yaml, json, null, { target: 'json' });
+  assert.deepEqual(JSON.parse(await fs.readFile(json, 'utf8')), { 姓名: '小鲸', 值: 123 });
+  const encoded = path.join(dir, 'utf16.txt'); await fs.writeFile(encoded, Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from('中文内容', 'utf16le')]));
+  assert.equal(await decodeText(encoded), '中文内容');
+  await fs.writeFile(path.join(dir, 'nul.txt'), Buffer.from([65, 0, 66])); await assert.rejects(inspectInput(path.join(dir, 'nul.txt')), /编码/);
+  const damaged = path.join(dir, 'damaged.gif'); await fs.writeFile(damaged, 'damaged-gif-data');
+  await assert.rejects(inspectInput(damaged), /文件无法识别鲸/);
+});

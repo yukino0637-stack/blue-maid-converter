@@ -9,8 +9,9 @@ async function invoke(channel, ...args) {
 contextBridge.exposeInMainWorld('cat', {
   checkTool: () => invoke('pet:tool'),
   prepareFile: file => invoke('pet:prepare', webUtils.getPathForFile(file)),
+  prepareFiles: files => invoke('pet:prepare', files.map(file => webUtils.getPathForFile(file))),
   clear: () => invoke('pet:clear'),
-  convert: target => invoke('pet:convert', target),
+  convert: (target, params) => invoke('pet:convert', target, params),
   onConversionStarted: callback => { ipcRenderer.on('pet:conversion-started', () => callback()); },
   reveal: () => invoke('pet:reveal'),
   actionMenu: () => invoke('pet:actions'),
