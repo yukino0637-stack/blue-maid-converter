@@ -21,7 +21,8 @@ test('图片转换在读取结果元数据后也能清理临时文件，连续�
   const original = await fs.readFile(input);
   for (let i = 0; i < 4; i++) {
     const output = path.join(root, 'result-' + i + '.webp');
-    assert.equal(await convertFile(input, output, null, { target: 'webp' }), output);
+    const saved = await convertFile(input, output, null, { target: 'webp' });
+    assert.equal(await fs.realpath(saved), await fs.realpath(output));
     assert.equal((await sharp(output).metadata()).format, 'webp');
   }
   assert.deepEqual(await fs.readFile(input), original);
