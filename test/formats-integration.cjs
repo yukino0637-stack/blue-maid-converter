@@ -30,8 +30,8 @@ const hash = async file => createHash('sha256').update(await fs.readFile(file)).
   await sharp(file('image.png')).flatten({ background: '#ffffff' }).jpeg().toFile(file('image.jpg'));
   await sharp(file('image.png')).webp().toFile(file('image.webp'));
   await sharp(file('image.png')).flatten({ background: '#ffffff' }).withMetadata({ orientation: 6 }).jpeg().toFile(file('rotated.jpg'));
-  // Fixed self-generated 32x24 colour HEIC: both platforms decode the same real container.
-  await fs.writeFile(file('photo.heic'), Buffer.from('AAAAKGZ0eXBoZWljAAAAAG1pZjFNaUhFTWlQcm1pYWZNaUhCaGVpYwAAArJtZXRhAAAAAAAAACFoZGxyAAAAAAAAAABwaWN0AAAAAAAAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAAA5waXRtAAAAAAABAAAATWlpbmYAAAAAAAMAAAAVaW5mZQIAAAAAAQAAaHZjMQAAAAAVaW5mZQIAAAEAAgAAaHZjMQAAAAAVaW5mZQIAAAEAAwAARXhpZgAAAAAoaXJlZgAAAAAAAAAOYXV4bAACAAEAAQAAAA5jZHNjAAMAAQABAAABpGlwcnAAAAF7aXBjbwAAABNjb2xybmNseAACAAIABoAAAAAMY2xsaQDLAEAAAAAUaXNwZQAAAAAAAAAgAAAAGAAAAAlpcm90AAAAABBwaXhpAAAAAAMICAgAAAAOcGl4aQAAAAABCAAAADdhdXhDAAAAAHVybjptcGVnOmhldmM6MjAxNTphdXhpZDoxAAAAAAwAAAAITgGlBAAB/kAAAABxaHZjQwEDcAAAALAAAAAAAB7wAPz9+PgAAAsDoAABABdAAQwB//8DcAAAAwCwAAADAAADAB5wJKEAAQAjQgEBA3AAAAMAsAAAAwAAAwAeoBQgQcCDCuIe5FlU3AgIGAKiAAEACUQBwGFyyEBTJAAAAHFodmNDAQQIAAAAv8gAAAAAHvAA/Pz4+AAACwOgAAEAF0ABDAH//wQIAAADAL/IAAADAAAeFwJAoQABACNCAQEECAAAAwC/yAAAAwAAHsBQgQcBAwU4gXuRZVNwICAgCKIAAQAJRAHAYdLIQFMkAAAAIWlwbWEAAAAAAAAAAgABBoECAwWIhAACBQMGh4mEAAAAOmlsb2MAAAAARAAAAwABAAAAAQAAAzYAAABIAAIAAAABAAADfgAAABQAAwAAAAEAAALqAAAATAAAAAFtZGF0AAAAAAAAALgAAAAGRXhpZgAATU0AKgAAAAgAAwEaAAUAAAABAAAAMgEbAAUAAAABAAAAOgEoAAMAAAABAAIAAAAAAAAAAAAZAAAAAQAAABkAAAABAAAARCgBr6LyRoF8xePn6/4jv//ooP1f/Bn//rf2f9RM90yyZ/o+g2D/rxM+NDzET+97Rl4Ft+rXIEufMOZLr85PrNvVgkfgAAAAECgBr07AkpAjRfFAYWUZwT4=', 'base64'));
+  // Fixed self-generated 256x192 colour HEIC: both platforms decode the same real container.
+  await fs.writeFile(file('photo.heic'), Buffer.from('AAAAJGZ0eXBoZWljAAAAAG1pZjFNaVBybWlhZk1pSEJoZWljAAABwW1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAHBpY3QAAAAAAAAAAAAAAAAAAAAAJGRpbmYAAAAcZHJlZgAAAAAAAAABAAAADHVybCAAAAABAAAADnBpdG0AAAAAAAEAAAA4aWluZgAAAAAAAgAAABVpbmZlAgAAAAABAABodmMxAAAAABVpbmZlAgAAAQACAABFeGlmAAAAABppcmVmAAAAAAAAAA5jZHNjAAIAAQABAAAA5GlwcnAAAADDaXBjbwAAABNjb2xybmNseAACAAIABoAAAAAMY2xsaQDLAEAAAAAUaXNwZQAAAAAAAAEAAAAAwAAAAAlpcm90AAAAABBwaXhpAAAAAAMICAgAAABvaHZjQwEDcAAAALAAAAAAADzwAPz9+PgAAAsDoAABABdAAQwB//8DcAAAAwCwAAADAAADADxwJKEAAQAhQgEBA3AAAAMAsAAAAwAAAwA8oAgIDBYh7kWVTcCAgYAgogABAAlEAcBhcshAUyQAAAAZaXBtYQAAAAAAAAABAAEGgQIDBYaEAAAALGlsb2MAAAAARAAAAgABAAAAAQAAAkEAAABNAAIAAAABAAAB9QAAAEwAAAABbWRhdAAAAAAAAACpAAAABkV4aWYAAE1NACoAAAAIAAMBGgAFAAAAAQAAADIBGwAFAAAAAQAAADoBKAADAAAAAQACAAAAAAAAAAAAGQAAAAEAAAAZAAAAAQAAAEkoAa+YtlIOaEaBfMXj5+v+I7//6KEPsW/Z6UeyTHloPm3F/OOKi/K/kEAisWIj7WKeAGIKr16i2EUFpALh8IoAAiID0sAAAFXA', 'base64'));
   await fs.copyFile(file('photo.heic'), file('photo.heif'));
   if (process.platform === 'win32' && tools.magickPath) {
     const { stdout } = await run(tools.magickPath, ['identify', '-limit', 'memory', '256MiB', '-limit', 'map', '256MiB', '-format', '%m %w %h', file('photo.heic') + '[0]']);
@@ -86,7 +86,7 @@ const hash = async file => createHash('sha256').update(await fs.readFile(file)).
     for (const target of ['jpg', 'png', 'webp'].filter(ext => ext !== source)) {
       await check((['heic', 'heif'].includes(source) ? 'photo.' : 'image.') + source, target, async output => {
         const info = await sharp(output).metadata();
-        assert.equal(info.width, 32); assert.equal(info.height, 24);
+        assert.equal(info.width, ['heic', 'heif'].includes(source) ? 256 : 32); assert.equal(info.height, ['heic', 'heif'].includes(source) ? 192 : 24);
         assert.equal(info.format, target === 'jpg' ? 'jpeg' : target);
       });
     }
