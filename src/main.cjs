@@ -5,6 +5,7 @@ const { detectLibreOffice, inspectInput, convertFile, convertFiles } = require('
 const { detectExtraTools, formatOptions } = require('./formats.cjs');
 const { readSound, loadSoundSettings, saveSoundSettings } = require('./sound.cjs');
 const petActions = require('./actions.js');
+const { listSkins, loadSkin, saveSkin } = require('./skin.cjs');
 
 let petWindow;
 let pending;
@@ -88,6 +89,11 @@ handler('pet:sound-select', async selection => {
   soundSettings = await saveSoundSettings(app.getPath('userData'), next);
   soundCandidate = undefined;
   return soundSettings;
+});
+handler('pet:skins', async () => ({ selected: await loadSkin(app.getPath('userData')), skins: await listSkins() }));
+handler('pet:skin-select', async id => {
+  if (busy) throw new Error('正在转换，完成后再换装鲸。');
+  return saveSkin(app.getPath('userData'), id);
 });
 handler('pet:prepare', async input => {
   if (busy) throw new Error('正在转换鲸，请稍等。');

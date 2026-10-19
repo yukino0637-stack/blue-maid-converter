@@ -34,22 +34,28 @@
     </section>
 
     <section id="pet-menu" class="pet-menu glass" aria-label="小女仆菜单" hidden>
-      <div class="menu-heading"><strong>小女仆菜单</strong><button id="menu-close" class="icon-button" aria-label="关闭菜单">×</button></div>
+      <div class="menu-heading"><strong>今天做什么呢</strong><button id="menu-close" class="icon-button" aria-label="关闭菜单">×</button></div>
       <div id="menu-home">
-        <button id="activity-toggle" class="menu-wide activity-toggle" aria-controls="activity-card" aria-expanded="false">活动 <span aria-hidden="true">›</span></button>
-        <h2>声音</h2>
+        <button id="activity-toggle" class="menu-row activity-toggle" aria-controls="activity-card" aria-expanded="false"><i class="dot dot-play" aria-hidden="true"></i>陪我玩<span aria-hidden="true">›</span></button>
+        <button id="skin-toggle" class="menu-row skin-toggle" aria-controls="skin-card" aria-expanded="false"><i class="dot dot-skin" aria-hidden="true"></i>换衣服<span aria-hidden="true">›</span></button>
+        <h2>点我时的声音</h2>
         <div class="sound-options" role="group" aria-label="点击音效">
           <button id="sound-duck" aria-pressed="true">小黄鸭 <span>默认</span></button>
           <button id="sound-custom" aria-pressed="false" hidden></button>
         </div>
-        <button id="sound-import" class="menu-wide">＋ 导入音效</button>
-        <p class="sound-hint">MP3 / WAV · 最大 10 MB</p>
-        <button id="menu-quit" class="menu-wide menu-quit">退出小女仆</button>
+        <button id="sound-import" class="menu-wide menu-plain">＋ 换成自己的声音</button>
+        <p class="sound-hint">MP3 / WAV，10 MB 以内</p>
+        <button id="menu-quit" class="menu-wide menu-quit">让她休息一下</button>
         <p id="menu-status" class="menu-status" role="status" aria-live="polite"></p>
       </div>
       <div id="activity-card" hidden>
-        <div class="activity-heading"><button id="activity-back" aria-label="返回主菜单">‹ 返回</button><h2>活动</h2></div>
+        <div class="activity-heading"><button id="activity-back" class="back-button" aria-label="返回主菜单">‹</button><h2>陪我玩</h2></div>
         <div id="activity-list" class="activity-options" role="group" aria-label="活动列表"></div>
+      </div>
+      <div id="skin-card" hidden>
+        <div class="activity-heading"><button id="skin-back" class="back-button" aria-label="返回主菜单">‹</button><h2>换衣服</h2></div>
+        <div id="skin-list" class="skin-options" role="radiogroup" aria-label="皮肤列表"></div>
+        <p class="sound-hint skin-hint">还没换好的动作先穿女仆装。</p>
       </div>
     </section>
 
@@ -67,6 +73,7 @@
     </div>
   </main>
   <script src="actions.js"></script>
+  <script src="skins.js"></script>
   <script src="renderer.js"></script>
 </body>
 </html>

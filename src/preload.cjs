@@ -18,6 +18,8 @@ contextBridge.exposeInMainWorld('cat', {
   soundSettings: () => invoke('pet:sound'),
   importSound: () => invoke('pet:sound-import'),
   selectSound: selection => invoke('pet:sound-select', selection),
+  skinSettings: () => invoke('pet:skins'),
+  selectSkin: id => invoke('pet:skin-select', id),
   setRegions: regions => ipcRenderer.send('pet:regions', regions),
   startMove: () => ipcRenderer.send('pet:move-start'),
   move: () => ipcRenderer.send('pet:move'),

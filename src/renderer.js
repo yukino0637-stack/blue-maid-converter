@@ -29,6 +29,15 @@ let soundSettings = { selected: 'duck', custom: null };
 let soundChanging = true;
 let hoverCloseTimer;
 let activityCategory;
+// 皮肤：目录内存在的动画用皮肤版本，缺少的回落到原装 dsh-pet。
+let skinState = { selected: 'classic', skins: [] };
+let skinChanging = false;
+const coreVideos = { idle: '待机呼吸休闲', working: '工作状态-忙碌点按', finish: '工作状态-雀跃庆祝', drag: '被鼠标拖拽悬空反馈' };
+function videoUrl(name) {
+  const skin = skinState.skins.find(item => item.id === skinState.selected);
+  const dir = skin && skin.files.includes(name) ? skin.dir : 'dsh-pet';
+  return new URL(`../assets/${dir}/${name}.webm`, location.href).href;
+}
 for (const [action, { label, category }] of [...Object.entries(actions), ['idle', { label: '回到待机' }]]) {
   if (category && category !== activityCategory) {
     const heading = document.createElement('h2');
@@ -42,18 +51,75 @@ for (const [action, { label, category }] of [...Object.entries(actions), ['idle'
   $('activity-list').append(button);
 }
 
-function showActivityList(show) {
-  $('menu-home').hidden = show;
-  $('activity-card').hidden = !show;
-  $('activity-toggle').setAttribute('aria-expanded', String(show));
+function showMenuCard(card) {
+  $('menu-home').hidden = Boolean(card);
+  $('activity-card').hidden = card !== 'activity';
+  $('skin-card').hidden = card !== 'skin';
+  $('activity-toggle').setAttribute('aria-expanded', String(card === 'activity'));
+  $('skin-toggle').setAttribute('aria-expanded', String(card === 'skin'));
   petMenu.scrollTop = 0;
   updateRegions();
+}
+function showActivityList(show) { showMenuCard(show ? 'activity' : null); }
+
+function renderSkins() {
+  const list = $('skin-list');
+  list.replaceChildren(...skinState.skins.map(skin => {
+    const button = document.createElement('button');
+    button.dataset.skin = skin.id;
+    button.setAttribute('role', 'radio');
+    button.setAttribute('aria-checked', String(skin.id === skinState.selected));
+    const swatch = document.createElement('i');
+    swatch.className = `skin-swatch ${skin.id}`;
+    swatch.setAttribute('aria-hidden', 'true');
+    const text = document.createElement('span');
+    const name = document.createElement('b');
+    name.textContent = skin.label;
+    const note = document.createElement('small');
+    const all = [...new Set([...Object.values(coreVideos), ...Object.values(actions).map(action => action.video)])];
+    const own = all.filter(video => skin.files.includes(video)).length;
+    note.textContent = skin.note;
+    text.append(name, note);
+    if (skin.id !== 'classic') {
+      const progress = document.createElement('small');
+      progress.textContent = `已换好 ${own}/${all.length} 个动作`;
+      text.append(progress);
+    }
+    button.append(swatch, text);
+    button.addEventListener('click', () => changeSkin(skin.id));
+    return button;
+  }));
+  updateMenu();
+}
+
+function applySkinVideos() {
+  for (const [name, video] of Object.entries(coreVideos)) {
+    const src = videoUrl(video);
+    if (videos[name].src !== src) videos[name].src = src;
+  }
+  if (animation && animation !== 'interaction') playAnimation(animation, true);
+}
+
+async function changeSkin(id) {
+  if (skinChanging || !canInteract() || id === skinState.selected) return;
+  skinChanging = true;
+  updateMenu();
+  try {
+    skinState.selected = await window.cat.selectSkin(id);
+    applySkinVideos();
+    renderSkins();
+    $('menu-status').textContent = '换好啦，下次打开还穿这套。';
+    interact('wave');
+  } catch (error) { $('menu-status').textContent = error.message; }
+  finally { skinChanging = false; updateMenu(); }
 }
 
 function updateMenu() {
   $('activity-toggle').disabled = !canInteract();
   for (const button of petMenu.querySelectorAll('[data-action]')) button.disabled = !canInteract();
   for (const id of ['sound-duck', 'sound-custom', 'sound-import']) $(id).disabled = soundChanging || !canInteract();
+  $('skin-toggle').disabled = !canInteract();
+  for (const button of petMenu.querySelectorAll('[data-skin]')) button.disabled = skinChanging || !canInteract();
   $('sound-duck').setAttribute('aria-pressed', String(soundSettings.selected === 'duck'));
   $('sound-custom').setAttribute('aria-pressed', String(soundSettings.selected === 'custom'));
   $('sound-custom').hidden = !soundSettings.custom;
@@ -65,7 +131,7 @@ function updateMenu() {
 
 function canAutoAct() {
   return state === 'idle' && animation === 'idle' && !moving && !dragDepth &&
-    petMenu.hidden && bubble.hidden && !actionMenuOpen && !soundChanging;
+    petMenu.hidden && bubble.hidden && !actionMenuOpen && !soundChanging && !skinChanging;
 }
 
 function scheduleIdleAction() {
@@ -174,6 +240,8 @@ $('menu-toggle').addEventListener('click', openMenu);
 $('menu-close').addEventListener('click', closeMenu);
 $('activity-toggle').addEventListener('click', () => { if (canInteract()) showActivityList(true); });
 $('activity-back').addEventListener('click', () => showActivityList(false));
+$('skin-toggle').addEventListener('click', () => { if (canInteract()) showMenuCard('skin'); });
+$('skin-back').addEventListener('click', () => showMenuCard(null));
 for (const button of petMenu.querySelectorAll('[data-action]')) {
   button.addEventListener('click', () => { interact(button.dataset.action); closeMenu(); });
 }
@@ -235,7 +303,7 @@ function interact(action = 'wave') {
   if (!canInteract()) return;
   if (action === 'idle') return playAnimation('idle');
   if (!Object.hasOwn(actions, action)) return;
-  const src = new URL(`../assets/dsh-pet/${actions[action].video}.webm`, location.href).href;
+  const src = videoUrl(actions[action].video);
   if (videos.interaction.src !== src) videos.interaction.src = src;
   playAnimation('interaction', true);
   if (!reducedMotion) bounce = $('pet').animate([
@@ -593,5 +661,12 @@ const soundReady = (async () => {
     if (settings.warning) $('menu-status').textContent = settings.warning;
   } catch (error) { $('menu-status').textContent = error.message; }
   finally { soundChanging = false; updateMenu(); scheduleHoverClose(); }
+})();
+const skinReady = (async () => {
+  try {
+    skinState = await window.cat.skinSettings();
+    applySkinVideos();
+  } catch (error) { $('menu-status').textContent = error.message; }
+  renderSkins();
 })();
 checkTool(true);
