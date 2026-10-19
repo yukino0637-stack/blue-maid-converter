@@ -40,28 +40,53 @@ h1 { font-size: 15px; font-weight: 650; line-height: 1.5; margin: 0; letter-spac
 .pet video { position: absolute; left: -69px; top: -1px; display: block; width: 256px; height: 144px; object-fit: contain; background: transparent; pointer-events: none; }
 .pet-area.moving .pet { cursor: grabbing; }
 .pet:focus-visible { outline: 2px solid #82aa98; outline-offset: -2px; border-radius: 30px; }
-.glass { background: linear-gradient(135deg, #ffffffe0, #eef4facc); border: 1px solid #ffffffbf; box-shadow: 0 4px 16px #28405a24, inset 0 1px 0 #ffffffd9; backdrop-filter: blur(14px) saturate(140%); }
-.menu-toggle { position: absolute; left: 101px; top: 38px; width: 30px; height: 30px; border-radius: 50%; padding: 0; color: #57758c; font-size: 22px; line-height: 24px; z-index: 9; }
-.menu-toggle:hover, .menu-toggle[aria-expanded="true"] { background: #ffffffeb; }
-.pet-menu { position: absolute; right: 16px; bottom: 152px; width: 142px; min-height: 210px; max-height: 230px; overflow-y: auto; padding: 10px; border-radius: 16px; z-index: 10; animation: bubble-in 150ms ease-out; }
-.menu-heading { display: flex; align-items: center; justify-content: space-between; gap: 4px; font-size: 12px; color: #405b70; }
-.menu-heading .icon-button { width: 20px; height: 22px; font-size: 18px; }
-.pet-menu h2 { margin: 9px 0 5px; font-size: 10px; font-weight: 600; color: #758b9b; }
-.activity-options { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; padding: 5px; border: 1px solid #ffffffbd; border-radius: 10px; background: #ffffff60; max-height: 142px; overflow-y: auto; }
+/* 菜单：便签纸质感，圆角与虚线描边呼应 Q 版桌宠，不用通用磨砂玻璃。 */
+.glass { background: #fffaf1f2; border: 2px solid #f1e3cc; box-shadow: 0 3px 0 #e8d6b8, 0 8px 18px #5a46301f; backdrop-filter: blur(6px); }
+.menu-toggle { position: absolute; left: 101px; top: 38px; width: 30px; height: 30px; border-radius: 50% 50% 50% 12px; padding: 0; color: #4f6fbf; font-size: 20px; line-height: 22px; z-index: 9; }
+.menu-toggle:hover, .menu-toggle[aria-expanded="true"] { background: #fff; box-shadow: 0 5px 0 #e8d6b8, 0 8px 18px #5a46301f; }
+.pet-menu { position: absolute; right: 16px; bottom: 152px; width: 150px; min-height: 210px; max-height: 248px; overflow-y: auto; padding: 9px 10px 8px; border-radius: 20px 20px 20px 8px; z-index: 10; animation: menu-pop 180ms cubic-bezier(.3, 1.4, .6, 1); scrollbar-width: none; }
+.pet-menu::-webkit-scrollbar { display: none; }
+.pet-menu::before { content: ""; position: absolute; inset: 4px; border: 1.5px dashed #ecd9bb; border-radius: 16px 16px 16px 6px; pointer-events: none; }
+.menu-heading { display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 0 2px; font-size: 12px; color: #6a4e36; letter-spacing: .5px; }
+.menu-heading strong { font-weight: 700; }
+.menu-heading .icon-button { width: 20px; height: 22px; font-size: 18px; color: #c6ad8f; }
+.pet-menu h2 { margin: 8px 2px 4px; font-size: 10px; font-weight: 700; color: #9c7f60; }
+.pet-menu button:not(.icon-button) { position: relative; border: 1.5px solid #f0e2cb; background: #fff; border-radius: 12px; padding: 5px 8px; color: #5b4633; font-size: 11px; transition: transform 120ms, background 120ms, border-color 120ms; }
+.pet-menu button:hover:not(:disabled) { background: #fff4e0; border-color: #f2c98e; transform: translateY(-1px); }
+.pet-menu button:active:not(:disabled) { transform: translateY(1px) scale(.98); }
+.menu-row { display: flex; align-items: center; gap: 6px; width: 100%; margin-top: 5px; text-align: left; }
+.menu-row:first-child { margin-top: 8px; }
+.menu-row > span { margin-left: auto; color: #c6ad8f; }
+.dot { width: 9px; height: 9px; flex-shrink: 0; border-radius: 50%; }
+.dot-play { background: #f3a24a; box-shadow: 0 0 0 2px #fde6c8; }
+.dot-skin { background: #5b86e0; box-shadow: 0 0 0 2px #dce7fb; }
+.activity-heading { display: flex; align-items: center; gap: 6px; margin-top: 7px; }
+.activity-heading h2 { margin: 0; font-size: 11px; color: #6a4e36; }
+.pet-menu .back-button { display: grid; place-items: center; width: 22px; height: 22px; padding: 0 0 2px; border-radius: 50%; font-size: 15px; line-height: 1; color: #9c7f60; }
+.activity-options { display: flex; flex-direction: column; gap: 4px; margin-top: 7px; padding: 5px; border-radius: 14px; background: #fbf1e1; max-height: 150px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #e8d6b8 transparent; }
+.activity-options h2 { margin: 6px 4px 1px; }
+.activity-options h2:first-child { margin-top: 2px; }
 .activity-options button { text-align: left; }
-.activity-toggle { margin-top: 9px; text-align: left; }
-.activity-toggle span { float: right; padding-right: 4px; }
-.activity-heading { display: flex; align-items: center; justify-content: space-between; margin-top: 7px; }
-.activity-heading h2 { margin: 0; }
-.pet-menu button:not(.icon-button) { border: 1px solid #ffffff8c; background: #ffffff70; border-radius: 7px; padding: 6px 3px; color: #405b70; font-size: 11px; }
-.pet-menu button:hover:not(:disabled) { background: #ffffffe6; }
 .sound-options button { display: block; width: 100%; margin-bottom: 4px; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sound-options button[aria-pressed="true"] { background: #dcebf5; border-color: #a9c7dc; }
-.sound-options span { float: right; font-size: 9px; color: #758b9b; padding: 1px 3px; }
+.sound-options button[aria-pressed="true"], .skin-options button[aria-checked="true"] { background: #fff1dc; border-color: #f2b56b; color: #6a4320; }
+.sound-options button[aria-pressed="true"]::after, .skin-options button[aria-checked="true"]::after { content: "♪"; position: absolute; right: 7px; top: 50%; transform: translateY(-50%); color: #e58a2c; font-size: 11px; font-weight: 700; }
+.skin-options button[aria-checked="true"]::after { content: "✓"; right: 8px; }
+.sound-options span { font-size: 9px; color: #b0916e; padding-left: 3px; }
+.sound-options button[aria-pressed="true"] span { display: none; }
 .menu-wide { width: 100%; }
-.sound-hint { margin: 5px 0 9px; font-size: 9px; color: #758b9b; }
-.pet-menu .menu-quit { color: #95615b; }
-.menu-status { font-size: 10px; line-height: 1.5; color: #6b8192; overflow-wrap: anywhere; margin: 7px 0 0; }
+.pet-menu .menu-plain { background: transparent; border-style: dashed; color: #8a6c50; text-align: left; }
+.sound-hint { margin: 3px 2px 4px; font-size: 9px; color: #9c7f60; }
+.pet-menu .menu-quit { background: transparent; border-color: transparent; color: #b06a5c; font-size: 10px; padding: 3px 8px; }
+.pet-menu .menu-quit:hover:not(:disabled) { background: #fdeceb; border-color: #f2cdc7; }
+.skin-options { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.skin-options button { display: flex; align-items: center; gap: 7px; width: 100%; text-align: left; padding: 6px 20px 6px 6px !important; }
+.skin-swatch { width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px #ecdcc4; }
+.skin-swatch.classic { background: conic-gradient(#2b3f8f 0 50%, #ffffff 0 75%, #1f2545 0); }
+.skin-swatch.hoodie { background: conic-gradient(#3a6fd8 0 50%, #f6f1e9 0 75%, #e9a33c 0); }
+.skin-options b { display: block; font-size: 11px; font-weight: 600; }
+.skin-options small { display: block; margin-top: 1px; font-size: 9px; color: #9c7f60; white-space: nowrap; }
+.skin-hint { margin-top: 8px; }
+.menu-status { font-size: 10px; line-height: 1.5; color: #8a6c50; overflow-wrap: anywhere; margin: 4px 2px 0; }
 .menu-status:empty { display: none; }
 .file-token { position: absolute; top: 19px; left: -5px; width: 38px; height: 47px; background: #fff; border: 1px solid #d1d9c9; border-radius: 5px; z-index: 7; box-shadow: 0 2px 7px #695b3a20; display: grid; place-items: end center; padding-bottom: 10px; color: #7a9570; font-size: 9px; pointer-events: none; }
 .paper-fold { position: absolute; right: 0; top: 0; width: 10px; height: 10px; background: #e9efdf; clip-path: polygon(0 0, 100% 100%, 0 100%); }
@@ -69,5 +94,6 @@ h1 { font-size: 15px; font-weight: 650; line-height: 1.5; margin: 0; letter-spac
 .particle { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #dbc69d; }
 .particle:nth-child(3n) { background: #a6b99a; }.particle:nth-child(3n + 1) { background: #faf5e7; }
 .pet-area.drag-over .pet { transform: rotate(-3deg) translateY(-3px); }
+@keyframes menu-pop { from { opacity: 0; transform: translateY(6px) scale(.92); } to { opacity: 1; transform: none; } }
 @keyframes bubble-in { from { opacity: 0; transform: translate(8px, 8px) scale(.97); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition: none !important; } }

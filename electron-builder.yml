@@ -7,6 +7,7 @@ files:
   - package.json
   - src/**/*
   - assets/dsh-pet/**/*
+  - assets/skins/**/*
   - assets/conversion-fonts/**/*
   - assets/duck-sound/SOURCES.md
   - assets/duck-sound/LICENSE
