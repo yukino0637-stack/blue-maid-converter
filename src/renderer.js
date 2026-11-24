@@ -12,6 +12,17 @@ let dragDepth = 0;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const videos = { idle: $('cat-idle'), working: $('cat-working'), finish: $('cat-finish'), interaction: $('cat-interaction'), drag: $('cat-drag') };
 const dragLandingStart = 8.5; // 拖拽素材末尾的落地段起点（秒）。
+const claudeDragLanding = 4; // Claude 拖拽素材的落地段起点，不沿用 8.5 秒。
+const maidMedia = Object.fromEntries(Object.entries(videos).map(([name, video]) => [name, video.src]));
+const claudeMedia = {
+  idle: new URL('../assets/claude-skin/idle.webm', location.href).href,
+  working: new URL('../assets/claude-skin/working.webm', location.href).href,
+  finish: new URL('../assets/claude-skin/finish.webm', location.href).href,
+  interaction: new URL('../assets/claude-skin/interaction.webm', location.href).href,
+  drag: new URL('../assets/claude-skin/drag.webm', location.href).href,
+};
+let skin = 'maid';
+try { if (localStorage.getItem('pet-skin') === 'claude') skin = 'claude'; } catch {}
 const actions = petActions;
 const idleActions = Object.keys(actions);
 const clickActions = Object.keys(actions).filter(action => ['转向', '点击回应'].includes(actions[action].category) || actions[action].video.startsWith('点击回应-'));
@@ -51,8 +62,13 @@ function showActivityList(show) {
 }
 
 function updateMenu() {
-  $('activity-toggle').disabled = !canInteract();
-  for (const button of petMenu.querySelectorAll('[data-action]')) button.disabled = !canInteract();
+  const activitiesEnabled = canInteract() && skin === 'maid';
+  $('activity-toggle').disabled = !activitiesEnabled;
+  for (const button of petMenu.querySelectorAll('[data-action]')) button.disabled = !activitiesEnabled;
+  $('skin-maid').disabled = !canInteract();
+  $('skin-claude').disabled = !canInteract();
+  $('skin-maid').setAttribute('aria-pressed', String(skin === 'maid'));
+  $('skin-claude').setAttribute('aria-pressed', String(skin === 'claude'));
   for (const id of ['sound-duck', 'sound-custom', 'sound-import']) $(id).disabled = soundChanging || !canInteract();
   $('sound-duck').setAttribute('aria-pressed', String(soundSettings.selected === 'duck'));
   $('sound-custom').setAttribute('aria-pressed', String(soundSettings.selected === 'custom'));
@@ -172,7 +188,9 @@ petMenu.addEventListener('pointerenter', () => clearTimeout(hoverCloseTimer));
 petMenu.addEventListener('pointerleave', scheduleHoverClose);
 $('menu-toggle').addEventListener('click', openMenu);
 $('menu-close').addEventListener('click', closeMenu);
-$('activity-toggle').addEventListener('click', () => { if (canInteract()) showActivityList(true); });
+$('activity-toggle').addEventListener('click', () => { if (canInteract() && skin === 'maid') showActivityList(true); });
+$('skin-maid').addEventListener('click', () => selectSkin('maid'));
+$('skin-claude').addEventListener('click', () => selectSkin('claude'));
 $('activity-back').addEventListener('click', () => showActivityList(false));
 for (const button of petMenu.querySelectorAll('[data-action]')) {
   button.addEventListener('click', () => { interact(button.dataset.action); closeMenu(); });
@@ -209,6 +227,12 @@ function playAnimation(next, restart = false) {
   }
   const video = videos[next];
   updateMenu();
+  if (video.readyState < 1) {
+    video.addEventListener('loadedmetadata', () => {
+      if (animation === next) playAnimation(next, true);
+    }, { once: true });
+    return;
+  }
   video.currentTime = 0;
   video.play().catch(error => {
     if (error.name !== 'AbortError' && animation === next) {
@@ -234,9 +258,11 @@ function canInteract() {
 function interact(action = 'wave') {
   if (!canInteract()) return;
   if (action === 'idle') return playAnimation('idle');
-  if (!Object.hasOwn(actions, action)) return;
-  const src = new URL(`../assets/dsh-pet/${actions[action].video}.webm`, location.href).href;
-  if (videos.interaction.src !== src) videos.interaction.src = src;
+  if (skin !== 'claude') {
+    if (!Object.hasOwn(actions, action)) return;
+    const src = new URL(`../assets/dsh-pet/${actions[action].video}.webm`, location.href).href;
+    if (videos.interaction.src !== src) videos.interaction.src = src;
+  }
   playAnimation('interaction', true);
   if (!reducedMotion) bounce = $('pet').animate([
     { transform: 'scale(1)' },
@@ -247,7 +273,7 @@ function interact(action = 'wave') {
 }
 
 async function showActions() {
-  if (!canInteract()) return;
+  if (!canInteract() || skin !== 'maid') return;
   actionMenuOpen = true;
   scheduleIdleAction();
   try {
@@ -263,6 +289,26 @@ window.cat.onConversionStarted(() => {
     $('message').textContent = '正在本机转换，请稍等鲸。';
   }
 });
+
+function applySkinSources() {
+  const pack = skin === 'claude' ? claudeMedia : maidMedia;
+  for (const [name, src] of Object.entries(pack)) {
+    if (videos[name].src !== src) videos[name].src = src;
+  }
+}
+
+function selectSkin(next) {
+  if (!canInteract()) return;
+  const chosen = next === 'claude' ? 'claude' : 'maid';
+  if (chosen === skin) return;
+  skin = chosen;
+  try { localStorage.setItem('pet-skin', skin); } catch {}
+  showActivityList(false);
+  applySkinSources();
+  playAnimation(animation || 'idle', true);
+}
+
+applySkinSources();
 playAnimation('idle');
 
 function updateRegions() {
@@ -545,7 +591,7 @@ function finishMove(event) {
   window.cat.endMove();
   if (wasDragAnimation) {
     videos.drag.loop = false;
-    videos.drag.currentTime = dragLandingStart;
+    videos.drag.currentTime = skin === 'claude' ? claudeDragLanding : dragLandingStart;
   }
   if (clicked) {
     interact(clickActions[Math.floor(Math.random() * clickActions.length)]);

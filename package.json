@@ -12,6 +12,7 @@
     "test:formats-ui": "node test/formats-ui.cjs",
     "test:ui": "node test/ui-smoke.cjs",
     "test:menu": "node test/menu-ui.cjs",
+    "test:skin": "node test/skin-ui.cjs",
     "test:full-formats": "node test/full-formats-integration.cjs",
     "test:full-matrix": "FULL_MATRIX=1 node test/full-formats-integration.cjs",
     "test:full-formats-extra": "node test/full-formats-extra.cjs",
