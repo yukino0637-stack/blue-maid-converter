@@ -1,0 +1,30 @@
+// Claude 皮肤的 25 个活动。只含本地文件名和菜单文字，播放由 renderer 决定。
+const claudeSkinClips = [
+  { key: 'idle', label: '待机呼吸', group: '常用' },
+  { key: 'working', label: '忙碌点按', group: '常用' },
+  { key: 'finish', label: '完成庆祝跳跃', group: '常用' },
+  { key: 'drag', label: '拖拽悬空与落地', group: '常用' },
+  { key: 'fail', label: '垂头叹气擦汗', group: '常用' },
+  { key: 'wave', label: '元气挥手', group: '常用' },
+  { key: 'hop', label: '开心跃动', group: '常用' },
+  { key: 'shy', label: '害羞捂脸', group: '常用' },
+  { key: 'pout', label: '傲娇抱臂', group: '常用' },
+  { key: 'look', label: '东张西望', group: '常用' },
+  { key: 'stretch', label: '伸懒腰', group: '常用' },
+  { key: 'cube', label: '玩魔方', group: '常用' },
+  { key: 'think', label: '托腮思考', group: '常用' },
+  { key: 'sort', label: '整理纸张', group: '常用' },
+  { key: 'pace', label: '来回踱步', group: '常用' },
+  { key: 'tail', label: '摇尾巴', group: '其他' },
+  { key: 'sidestep', label: '左右侧步', group: '其他' },
+  { key: 'squish', label: '压扁回弹', group: '其他' },
+  { key: 'startle', label: '受惊跳起', group: '其他' },
+  { key: 'bow', label: '鞠躬致意', group: '其他' },
+  { key: 'mirror', label: '照镜子', group: '其他' },
+  { key: 'sway', label: '左右摇摆', group: '其他' },
+  { key: 'violin', label: '拉小提琴', group: '其他' },
+  { key: 'kite', label: '放风筝', group: '其他' },
+  { key: 'kick', label: '抬腿踢出', group: '其他' },
+];
+
+if (typeof module !== 'undefined') module.exports = claudeSkinClips;

@@ -1,0 +1,177 @@
+[
+  {
+    "key": "idle",
+    "label": "待机呼吸",
+    "sha256": "51704f93bab82c14f8b1d0b077ea9e77b4d9573f204f8cbf446c9ff6c96b4fd8",
+    "bytes": 611035,
+    "loop": true
+  },
+  {
+    "key": "working",
+    "label": "忙碌点按",
+    "sha256": "cbb790fa177967b76c25e8a571917e7013485d1242e03bc82ce5d216be914921",
+    "bytes": 973729,
+    "loop": true
+  },
+  {
+    "key": "finish",
+    "label": "完成庆祝跳跃",
+    "sha256": "4cc8c0b3147d1383d4dcf9ce920163666be751b9d8e91c15d8ed5eec589907fd",
+    "bytes": 1046156,
+    "loop": false
+  },
+  {
+    "key": "drag",
+    "label": "拖拽悬空与落地",
+    "sha256": "ea45ddc37e34cca848b65aeb9e4b4e0637704f75e716bbba0f010f1131ecbb84",
+    "bytes": 1336299,
+    "loop": false
+  },
+  {
+    "key": "fail",
+    "label": "垂头叹气擦汗",
+    "sha256": "07d5199cd5cd300a849c3df4d8695bcc37b55b3b46110899dcb04c9d2367d020",
+    "bytes": 593008,
+    "loop": false
+  },
+  {
+    "key": "wave",
+    "label": "元气挥手",
+    "sha256": "890f80b86eaa8789fe56f9d361d0c3c9df03eab7c2c24b00c5baf368ea703fdd",
+    "bytes": 1164256,
+    "loop": false
+  },
+  {
+    "key": "hop",
+    "label": "开心跃动",
+    "sha256": "4e60491704f530f39cd2b485e79e42f98eb1d95cf219cdc0957cee9005f67dc9",
+    "bytes": 946906,
+    "loop": false
+  },
+  {
+    "key": "shy",
+    "label": "害羞捂脸",
+    "sha256": "a7a838f0ad30ca00af814b2998d7caf6e060bd087916a7dda95327fdfa2d27e5",
+    "bytes": 838686,
+    "loop": false
+  },
+  {
+    "key": "pout",
+    "label": "傲娇抱臂",
+    "sha256": "a8416e3b03f25ba3f146bb116d6aa3eaa741f72de94d83fbb7208ad2cb773164",
+    "bytes": 766498,
+    "loop": false
+  },
+  {
+    "key": "look",
+    "label": "东张西望",
+    "sha256": "acab9a3894891baa7befc905b8ea66b973844fb32b4d203da25214038453c833",
+    "bytes": 735159,
+    "loop": false
+  },
+  {
+    "key": "stretch",
+    "label": "伸懒腰",
+    "sha256": "e53b607fa3cdf80bb02b10cdfc31d238c5c320e79b478cfe158f1054d47efd22",
+    "bytes": 741155,
+    "loop": false
+  },
+  {
+    "key": "cube",
+    "label": "玩魔方",
+    "sha256": "129d3c2df6fdac05a26dd5ff2ff520275af81135e03b0588510ad4e228d25572",
+    "bytes": 565718,
+    "loop": false
+  },
+  {
+    "key": "think",
+    "label": "托腮思考",
+    "sha256": "dca21ab018ef9e68257f264e67454cad245b14fc997be9b9b97a44c7c094959b",
+    "bytes": 531696,
+    "loop": false
+  },
+  {
+    "key": "sort",
+    "label": "整理纸张",
+    "sha256": "e7e8d8ba5d3a362b698aef46863e5f88e4756b018a622d8ed126fa1ec16ceb9e",
+    "bytes": 488229,
+    "loop": false
+  },
+  {
+    "key": "pace",
+    "label": "来回踱步",
+    "sha256": "5ac415b51a73b1e2e84e5d684a43da0c2c97cf6a7d02c578b6d26940fb9c2d24",
+    "bytes": 1243097,
+    "loop": false
+  },
+  {
+    "key": "tail",
+    "label": "摇尾巴",
+    "sha256": "8ec94144c24c6a53f9c1c9cebe379f5f6533e304efd1150777eb141a77ac0e3c",
+    "bytes": 912854,
+    "loop": false
+  },
+  {
+    "key": "sidestep",
+    "label": "左右侧步",
+    "sha256": "9a9127c0f260d596d50c9f92d33b9efd5e578291ec97903503ced0e144cde0bd",
+    "bytes": 1094540,
+    "loop": false
+  },
+  {
+    "key": "squish",
+    "label": "压扁回弹",
+    "sha256": "6725f29ab681f7e8c792bb7820df9313bf2cecfe97027b1d3cdfa277a71ac87a",
+    "bytes": 618245,
+    "loop": false
+  },
+  {
+    "key": "startle",
+    "label": "受惊跳起",
+    "sha256": "45d6a228ab8b62fb7d01035913f5f269e84818a4b28a7adccab45ba7e6eff9e6",
+    "bytes": 849464,
+    "loop": false
+  },
+  {
+    "key": "bow",
+    "label": "鞠躬致意",
+    "sha256": "3119af648f652af795a265339f9cf0fed2b44b2f33b1abfb27e2ee751d130068",
+    "bytes": 794878,
+    "loop": false
+  },
+  {
+    "key": "mirror",
+    "label": "照镜子",
+    "sha256": "1ce3d280d08bbdad3a233cd4474f77d57454193aaa5d95ab66684b54ec8fca5d",
+    "bytes": 587139,
+    "loop": false
+  },
+  {
+    "key": "sway",
+    "label": "左右摇摆",
+    "sha256": "fd42f50def8a4cd934f6b338a1e9789039b19bd3d848d88d2df6dd948af9130f",
+    "bytes": 1203179,
+    "loop": false
+  },
+  {
+    "key": "violin",
+    "label": "拉小提琴",
+    "sha256": "06a249d934fe7cbf067ed1ec168090372ecaf8436d57666035bb77d463115dcc",
+    "bytes": 1055715,
+    "loop": false
+  },
+  {
+    "key": "kite",
+    "label": "放风筝",
+    "sha256": "d08d81e5037454c79eb4610e596bbea87250f57de25002ee18674865a5d6168e",
+    "bytes": 747082,
+    "loop": false
+  },
+  {
+    "key": "kick",
+    "label": "抬腿踢出",
+    "sha256": "a1c61707e6b4b844112c6bd5cfba9ffba7f4a2c188d70527ba85efd2b5dfec0c",
+    "bytes": 956973,
+    "loop": false
+  }
+]
