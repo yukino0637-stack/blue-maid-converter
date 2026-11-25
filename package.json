@@ -1,6 +1,6 @@
 {
   "name": "cat-file-converter",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "本地文件转换桌宠：文档、图片、音视频、表格、字幕、OCR、批量转换与 PDF 工具，支持 macOS 和 Windows。",
   "main": "src/main.cjs",

@@ -4,7 +4,7 @@
 
 ## macOS Apple Silicon
 
-下载 `BlueMaid-0.2.0-macOS-arm64.dmg`，打开后将「蓝毛小女仆」拖入应用程序目录；ZIP 是同一独立应用的压缩版。适用于 Apple Silicon，包括 M 系列芯片。本版使用临时签名，没有 Apple 开发者签名或公证；系统可能要求在系统设置的「隐私与安全性」中确认打开。
+当前版本下载 `BlueMaid-0.3.0-macOS-arm64.dmg`，打开后将「蓝毛小女仆」拖入应用程序目录；ZIP 是同一独立应用的压缩版。适用于 Apple Silicon，包括 M 系列芯片。本版使用临时签名，没有 Apple 开发者签名或公证；系统可能要求在系统设置的「隐私与安全性」中确认打开。v0.2.0 的安装包仍保留在该版本的 Release 页面，不会被替换。
 
 现有 Command+D 后台启动器仍打开 `/Applications/蓝毛小女仆.app`。安装新版到同名路径后即可继续使用；如果那里还是旧源码入口的符号链接，请先在 Finder 核对并移走旧入口，再安装新版，不要删除项目目录。安装包不会自动修改登录启动项。
 
@@ -17,7 +17,7 @@ brew install ffmpeg poppler pandoc qpdf jpeg-xl libraw tesseract tesseract-lang
 
 ## Windows 10/11 x64
 
-下载 `BlueMaid-0.2.0-Windows-x64-Setup.exe`，按安装向导选择目录，使用桌面或开始菜单快捷方式打开。本版没有 Windows 发布者签名，系统可能显示未验证发布者提示。Windows 版通过桌面快捷方式启动，不安装 Mac 的 Command+D 后台程序。
+当前版本下载 `BlueMaid-0.3.0-Windows-x64-Setup.exe`，按安装向导选择目录，使用桌面或开始菜单快捷方式打开。本版没有 Windows 发布者签名，系统可能显示未验证发布者提示。Windows 版通过桌面快捷方式启动，不安装 Mac 的 Command+D 后台程序。v0.2.0 的安装包仍保留在该版本的 Release 页面。
 
 以下工具需要自行安装。安装后重启桌宠，或在转换气泡中重新检查：
 

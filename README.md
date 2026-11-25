@@ -28,7 +28,7 @@
 
 安装包包含 Electron、Node.js 和程序依赖，无需源码目录或另装 Node.js。转换工具按需单独安装；本版没有开发者证书，Mac 临时签名未公证、Windows 未签名。详细步骤与工具下载地址见 [安装说明](docs/INSTALL.md)。公开包不包含无再分发授权的小黄鸭音频，可导入自有 MP3/WAV。
 
-v0.2.0 的 Mac / Windows 真实转换、安装后界面检查及下载校验见 [双平台发布验收](docs/RELEASE-VALIDATION-v0.2.0.md)。
+v0.2.0 的 Mac / Windows 真实转换、安装后界面检查及下载校验见 [双平台发布验收](docs/RELEASE-VALIDATION-v0.2.0.md)。v0.3.0 增加可选 Claude 皮肤，说明见 [v0.3.0 发布说明](docs/RELEASE-v0.3.0.md)。
 
 ## 从源码第一次启动
 
