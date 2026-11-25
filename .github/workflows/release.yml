@@ -1,8 +1,13 @@
 name: Build and verify desktop releases
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: '要发布的新版本标签，例如 v0.3.0。不会重建已发布的 v0.2.0。'
+        required: true
+        type: string
   push:
-    tags: ['v0.2.0']
+    tags: ['v[0-9]+.[0-9]+.[0-9]+']
 permissions:
   contents: read
 jobs:
@@ -101,7 +106,18 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -eu
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then TAG="${{ inputs.tag }}"; else TAG="$GITHUB_REF_NAME"; fi
+          case "$TAG" in
+            v0.2.0) echo '拒绝重建已发布的 v0.2.0。' >&2; exit 1 ;;
+            v[0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "标签格式必须是 v1.2.3，收到 $TAG" >&2; exit 1 ;;
+          esac
+          VERSION="${TAG#v}"
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          if [ "$PACKAGE_VERSION" != "$VERSION" ]; then echo "package.json 版本 $PACKAGE_VERSION 与标签 $TAG 不一致。" >&2; exit 1; fi
+          if gh release view "$TAG" >/dev/null 2>&1; then echo "Release $TAG 已存在，拒绝覆盖。" >&2; exit 1; fi
           cd release-assets
           sha256sum BlueMaid-* > SHA256SUMS.txt
           cd ..
-          gh release create v0.2.0 release-assets/* --target "$GITHUB_SHA" --title '蓝毛小女仆 v0.2.0 · macOS / Windows' --notes-file docs/RELEASE-v0.2.0.md
+          gh release create "$TAG" release-assets/* --target "$GITHUB_SHA" --title "蓝毛小女仆 $TAG · macOS / Windows" --notes-file "docs/RELEASE-$TAG.md"
