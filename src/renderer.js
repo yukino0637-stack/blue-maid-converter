@@ -68,6 +68,8 @@ function showActivityList(show) {
   $('activity-card').hidden = !show;
   $('activity-list').hidden = !show || skin === 'claude';
   $('claude-activity-list').hidden = !show || skin !== 'claude';
+  $('activity-list').scrollTop = 0;
+  $('claude-activity-list').scrollTop = 0;
   $('activity-toggle').setAttribute('aria-expanded', String(show));
   petMenu.scrollTop = 0;
   updateRegions();
@@ -359,9 +361,10 @@ function selectSkin(next) {
   if (!canInteract()) return;
   const chosen = next === 'claude' ? 'claude' : 'maid';
   if (chosen === skin) return;
+  const activityOpen = !$('activity-card').hidden;
   skin = chosen;
   try { localStorage.setItem('pet-skin', skin); } catch {}
-  showActivityList(false);
+  showActivityList(activityOpen);
   applySkinSources();
   playAnimation(animation || 'idle', true);
 }
